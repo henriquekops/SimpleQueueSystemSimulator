@@ -4,7 +4,6 @@
 from art import tprint
 import tkinter as tk
 from src import (
-    producer,
     display
 )
 
