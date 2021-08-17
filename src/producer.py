@@ -12,13 +12,6 @@ class Producer:
         - __init__()
         - generate(a, c, m)
     """
-
-    def __init__(self, x) -> None:
-        """
-        - Params:
-            - x: starting seed for random sequence
-        """
-        self.__x = x
     
     def __next(self, x:int, a:int, c:int, m:int) -> int:
         """
@@ -32,9 +25,10 @@ class Producer:
         """
         return ((a * x) + c) % m
 
-    def generate(self, a:int, c:int, m:int, n:int) -> List[int]:
+    def generate(self, x:int, a:int, c:int, m:int, n:int) -> List[int]:
         """
         - Params:
+            - x: seed to start random sequence
             - a: sequence multiplier
             - c: constant for variation of sequence
             - m: max size of random value in sequence
@@ -42,9 +36,8 @@ class Producer:
         - Returns:
             - Random integer sequence based on initial seed and params
         """
-        x = self.__x
         lst = []
-        for i in range (n):
+        for _ in range (n):
             x = self.__next(x, a, c, m)
             lst.append(x)
         return lst
