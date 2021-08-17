@@ -11,6 +11,12 @@ from matplotlib.backends.backend_tkagg import (
 
 class Display(tk.Frame):
 
+    """
+    - Responsible for UI
+    - Methods:
+        - __init__()
+    """
+
     def __init__(self, master:tk.Tk=None) -> None:
         super().__init__(master)
         self.__master = master
@@ -27,6 +33,13 @@ class Display(tk.Frame):
         self.pack()
 
     def __widgets(self) -> None:
+        """
+        - Starts all UI widgets
+        - Params:
+            - None
+        - Returns:
+            - None
+        """
         self.__subplot = self.__fig.add_subplot(111)
         self.__subplot.set_xlabel("Sequence size")
         self.__subplot.set_ylabel("Sequence numbers")
@@ -61,7 +74,9 @@ class Display(tk.Frame):
 
     def __plot(self, e) -> None:
         """
-        - Plot chart for random sequence
+        - Plot chart for random sequence at UI
+        - Params:
+            - None
         - Returns:
             - None
         """

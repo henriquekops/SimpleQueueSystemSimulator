@@ -3,45 +3,47 @@
 
 class Queue:
 
-    def __init__(self, size=None) -> None:
+    """
+    - Responsible for simulating queue
+    - Methods:
+        - set_servers(server_list)
+        - handle(time)
+    """
 
+    def __init__(self, size=None) -> None:
         self.size = size
         self.servers = None
         self.check_in = list()
         self.treatment = list()
         self.data = list()
     
-    def _set_time(self, target) -> None:
+    def _set_global_time(self, increment) -> None:
         """
-        Set to target the current time thats was called
-
-        Parameters:
-            targer:
-                check_in or tratment
-        
-        Return: None
+        - Increase the simulation's global time 
+        - Parameters:
+            - increment: Increase global time
+        - Returns:
+            - None
         """
         pass
 
-    def set_servers(self, list_servers) -> None:
+    def set_servers(self, server_list) -> None:
         """
-        Add a list of server on queue server atribute
-
-        Parameters:
-            list_servers
-        
-        Return: None
+        - Add servers to serve clients
+        - Parameters:
+            - server_list: List of servers 
+        - Returns:
+            - None
         """
         pass
 
-    def handle(self, random_number) -> bool:
+    def handle(self, time) -> bool:
         """
-        Process the numbers
-
-        Parameters:
-            random_number
-        
-        Return: bool
+        - Serve client
+        - Parameters:
+            - time: Time needed to serve client
+        - Returns:
+            - Boolean if finished serving
         """
         self._set_time()
         pass

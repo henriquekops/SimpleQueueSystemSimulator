@@ -6,15 +6,15 @@ from typing import List
 class Producer:
 
     """
-    - Producer:
-        - Generates a sequence of random numbers using linear congruent method
+    - Generates a sequence of random numbers using linear congruent method
     - Methods:
         - __init__()
-        - generate(a, c, m)
+        - generate(x, a, c, m, n) 
     """
     
     def __next(self, x:int, a:int, c:int, m:int) -> int:
         """
+        - Computes next number in random sequence
         - Params:
             - x: seed to consider
             - a: sequence multiplier
@@ -27,6 +27,7 @@ class Producer:
 
     def generate(self, x:int, a:int, c:int, m:int, n:int) -> List[int]:
         """
+        - Generates random sequence using linear congruent method
         - Params:
             - x: seed to start random sequence
             - a: sequence multiplier
@@ -34,7 +35,7 @@ class Producer:
             - m: max size of random value in sequence
             - n: size of sequence
         - Returns:
-            - Random integer sequence based on initial seed and params
+            - Random integer sequence based on seed and params
         """
         lst = []
         for _ in range (n):

@@ -6,19 +6,21 @@ import heapq
 class Scheduler:
 
     """
-    Scheduler:
-        Min-heap representation using b-tree for random event scheduling
-
-    __init__():
-        No arguments (for now)
-
-    next():
-        No arguments (for now)
+    - Min-heap representation using b-tree for random event scheduling
+    - Methods:
+        - __init__():
+        - next():
     """
 
     def __init__(self) -> None:
         pass
 
     def next() -> None:
-        """Give next number at min heap"""
+        """
+        - Give next number at min heap
+        - Params:
+            - None
+        - Returns:
+            - None
+        """
         pass
