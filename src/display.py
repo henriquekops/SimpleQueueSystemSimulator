@@ -1,31 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import matplotlib.pyplot as plt
+
+from typing import List
+from matplotlib import pyplot as plt
 
 class Display:
 
     @classmethod
-    def plot_chart(cls, data) -> None:
+    def plot(cls, sequence: List[int]) -> None:
         """
-            Display data plot
+        - Plot chart of sequence
 
-            Parameters:
-                data
+        - Parameters:
+            - sequence: pseudo-random sequence of integers
             
             Return: None
         """
-        plot_done = cls._build_plot()
-        #plot_done.show()
-        pass
+        plt.plot(list(range(0, len(sequence))), sequence, 'ro')
+        plt.xlabel('sequence')
+        plt.ylabel('quantity')
+        plt.show()
 
-    @classmethod
-    def _build_plot(cls, data) -> plt:
-        """
-            Build and set plot charts
-
-            Parameters:
-                data
-            
-            Return: ploty object
-        """
-        pass
