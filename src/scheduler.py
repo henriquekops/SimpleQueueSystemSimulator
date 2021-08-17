@@ -1,26 +1,41 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import heapq
+from heapq import (
+    heapify,
+    heappop,
+    heappush
+)
 
 class Scheduler:
 
     """
     - Min-heap representation using b-tree for random event scheduling
     - Methods:
-        - __init__():
-        - next():
+        - __init__()
+        - add()
+        - next()
     """
 
     def __init__(self) -> None:
-        pass
+        self.__heap = []
 
-    def next() -> None:
+    def add(self, element):
         """
-        - Give next number at min heap
+        - Insert element at heap
+        - Params:
+            - element: Element to be inserted 
+        - Returns:
+            - None
+        """
+        heappush(self.__heap, element)
+
+    def next(self):
+        """
+        - Give next client at min heap
         - Params:
             - None
         - Returns:
             - None
         """
-        pass
+        return heappop(self.__heap)
