@@ -10,12 +10,14 @@ class Queue:
         - handle(time)
     """
 
-    def __init__(self, size=None) -> None:
-        self.size = size
-        self.servers = None
-        self.check_in = list()
-        self.treatment = list()
-        self.data = list()
+    def __init__(self, capacity:int, servers:int, minArrival:int, maxArrival:int, minServe:int, maxServe:int) -> None:
+        self.__capacity = capacity
+        self.__servers = servers
+        self.__minArrival = minArrival
+        self.__maxArrival = maxArrival
+        self.__minServe = minServe
+        self.__maxServe = maxServe
+        self.__loss = 0
     
     def _set_global_time(self, increment) -> None:
         """

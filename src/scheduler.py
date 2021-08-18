@@ -18,7 +18,7 @@ class Scheduler:
     """
 
     def __init__(self) -> None:
-        self.__heap = []
+        self.__heap = heapify([])
 
     def add(self, element):
         """
