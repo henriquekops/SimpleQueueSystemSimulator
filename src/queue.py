@@ -10,24 +10,26 @@ class Queue:
         - handle(time)
     """
 
-    def __init__(self, capacity:int, servers:int, minArrival:int, maxArrival:int, minServe:int, maxServe:int) -> None:
+    def __init__(self, capacity:int, servers:int) -> None:
         self.__capacity = capacity
         self.__servers = servers
-        self.__minArrival = minArrival
-        self.__maxArrival = maxArrival
-        self.__minServe = minServe
-        self.__maxServe = maxServe
         self.__loss = 0
-    
-    def _set_global_time(self, increment) -> None:
-        """
-        - Increase the simulation's global time 
-        - Parameters:
-            - increment: Increase global time
-        - Returns:
-            - None
-        """
-        pass
+        self.__serving = 0
+
+    def is_full(self) -> bool:
+        return self.__serving == self.__capacity
+
+    def is_next(self) -> bool:
+        return self.__serving <= 1
+
+    def is_empty(self) -> bool:
+        return self.__serving == 0
+
+    def arrive(self) -> None:
+        self.__serving += 1
+
+    def exit(self) -> None:
+        self.__serving -= 1
 
     def set_servers(self, server_list) -> None:
         """
@@ -47,7 +49,7 @@ class Queue:
         - Returns:
             - Boolean if finished serving
         """
-        self._set_time()
-        pass
+
+        return
     
 

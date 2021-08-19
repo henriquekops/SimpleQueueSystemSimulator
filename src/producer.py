@@ -8,37 +8,70 @@ class Producer:
     """
     - Generates a sequence of random numbers using linear congruent method
     - Methods:
-        - __init__()
-        - generate(x, a, c, m, n) 
+        - __init__(x, a, c, m, n)
+        - generate() 
     """
-    
-    def __next(self, x:int, a:int, c:int, m:int) -> int:
-        """
-        - Computes next number in random sequence
-        - Params:
-            - x: seed to consider
-            - a: sequence multiplier
-            - c: constant for variation of sequence
-            - m: max size of random value in sequence
-        - Returns:
-            - Next random value in sequence
-        """
-        return ((a * x) + c) % m
 
-    def generate(self, x:int, a:int, c:int, m:int, n:int) -> List[int]:
+    def __init__(self, x:int, a:int, c:int, m:int, n:int):
         """
-        - Generates random sequence using linear congruent method
-        - Params:
+        Params:
             - x: seed to start random sequence
             - a: sequence multiplier
             - c: constant for variation of sequence
-            - m: max size of random value in sequence
+            - m: max random value in sequence
             - n: size of sequence
+        """
+        self.__x = x
+        self.__a = a
+        self.__c = c
+        self.__m = m
+        self.__n = n
+
+    def __next(self, x) -> int:
+        """
+        - Computes next number in random sequence
+        - Params:
+            - x: seed to generate the random value
         - Returns:
-            - Random integer sequence based on seed and params
+            - Next random value in sequence
+        """
+        
+        return ((self.__a * x) + self.__c) % self.__m
+
+    def __normalize(self, x:int) -> float:
+        """
+        - Normalizes the random number at the interval [0;1)
+        - Param:
+            - x: random value previously generated
+        - Returns:
+            - Normalized random number 
+        """
+        
+        return round(x / self.__m, 2)
+
+    def __get_at_interval(self, n_x:int, a:int, b:int):
+        """
+        - Find normalized random value inside an interval
+        - Params:
+            - n_x: normalized random value previously generated
+            - a: interval start
+            - b: interval end
+        """
+        return (b - a) * n_x
+
+    def generate(self, a, b) -> List[float]:
+        """
+        - Generates random sequence using linear congruent method
+        - Params:
+            - a: interval start
+            - b: interval end
+        - Returns:
+            - Random float sequence based on seed and params
         """
         lst = []
-        for _ in range (n):
-            x = self.__next(x, a, c, m)
-            lst.append(x)
+        x = self.__x
+        for i in range (self.__n):
+            x = self.__next(x)
+            n_x = self.__normalize(x)
+            lst.append(self.__get_at_interval(n_x, a, b))
         return lst

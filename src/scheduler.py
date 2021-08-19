@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from heapq import (
-    heapify,
     heappop,
     heappush
 )
@@ -18,7 +17,7 @@ class Scheduler:
     """
 
     def __init__(self) -> None:
-        self.__heap = heapify([])
+        self.__heap = []
 
     def add(self, element):
         """
