@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import overload
 
 class Producer:
 
@@ -12,22 +12,21 @@ class Producer:
         - generate() 
     """
 
-    def __init__(self, x:int, a:int, c:int, m:int, n:int):
+    def __init__(self, x:int, a:int, c:int, m:int):
         """
         Params:
             - x: seed to start random sequence
             - a: sequence multiplier
             - c: constant for variation of sequence
             - m: max random value in sequence
-            - n: size of sequence
         """
+        
         self.__x = x
         self.__a = a
         self.__c = c
         self.__m = m
-        self.__n = n
 
-    def __next(self, x) -> int:
+    def __next(self, prev_x) -> int:
         """
         - Computes next number in random sequence
         - Params:
@@ -36,7 +35,7 @@ class Producer:
             - Next random value in sequence
         """
         
-        return ((self.__a * x) + self.__c) % self.__m
+        return ((self.__a * prev_x) + self.__c) % self.__m
 
     def __normalize(self, x:int) -> float:
         """
@@ -47,7 +46,7 @@ class Producer:
             - Normalized random number 
         """
         
-        return round(x / self.__m, 2)
+        return x / self.__m
 
     def __get_at_interval(self, n_x:int, a:int, b:int):
         """
@@ -57,9 +56,10 @@ class Producer:
             - a: interval start
             - b: interval end
         """
-        return (b - a) * n_x
 
-    def generate(self, a, b) -> List[float]:
+        return ( (b - a) * n_x ) + a
+
+    def generate(self, a, b) -> float:
         """
         - Generates random sequence using linear congruent method
         - Params:
@@ -68,10 +68,18 @@ class Producer:
         - Returns:
             - Random float sequence based on seed and params
         """
-        lst = []
-        x = self.__x
-        for i in range (self.__n):
-            x = self.__next(x)
-            n_x = self.__normalize(x)
-            lst.append(self.__get_at_interval(n_x, a, b))
-        return lst
+
+        self.__x = self.__next(self.__x)
+        return self.__get_at_interval(self.__normalize(self.__x), a, b)
+
+    @overload
+    def generate(self) -> float:
+        """
+        - Generate next pseudo random value in sequence 
+        - Returns:
+            - Next random sequence value at interval [0;1)
+        """
+        
+        self.__x = self.__next(self.__x)
+        return self.__normalize(self.__x)
+

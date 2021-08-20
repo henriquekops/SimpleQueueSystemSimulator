@@ -11,45 +11,36 @@ class Queue:
     """
 
     def __init__(self, capacity:int, servers:int) -> None:
+        self.__times = [0.0] * ( capacity + 1 ) # TODO: when infinite??
         self.__capacity = capacity
         self.__servers = servers
         self.__loss = 0
-        self.__serving = 0
+        self.__position = 0
 
-    def is_full(self) -> bool:
-        return self.__serving == self.__capacity
+    def is_slot_available(self) -> bool:
+        return self.__position < self.__capacity
 
-    def is_next(self) -> bool:
-        return self.__serving <= 1
+    def is_server_available(self) -> bool:
+        return self.__position <= self.__servers
 
-    def is_empty(self) -> bool:
-        return self.__serving == 0
+    def was_someone_waiting(self) -> bool:
+        return self.__position >= self.__servers
 
-    def arrive(self) -> None:
-        self.__serving += 1
+    def enter(self) -> None:
+        self.__position += 1
 
     def exit(self) -> None:
-        self.__serving -= 1
+        self.__position -= 1
 
-    def set_servers(self, server_list) -> None:
-        """
-        - Add servers to serve clients
-        - Parameters:
-            - server_list: List of servers 
-        - Returns:
-            - None
-        """
-        pass
+    def update_queue_time(self, time:float) -> None:
+        self.__times[self.__position] += time
 
-    def handle(self, time) -> bool:
-        """
-        - Serve client
-        - Parameters:
-            - time: Time needed to serve client
-        - Returns:
-            - Boolean if finished serving
-        """
-
-        return
-    
-
+    def results(self, global_time:float) -> str:
+        return {
+        f""" 
+            Capacity: {self.__capacity}
+            Servers: {self.__servers}
+            Loss: {self.__loss}
+            Times: {self.__times}
+            Percents: {[( t / global_time ) for t in self.__times]}
+        """}
