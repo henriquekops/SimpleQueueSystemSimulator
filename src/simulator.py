@@ -15,7 +15,7 @@ class Simulator:
     """
     - Simulator controls the simulation workflow
     - Methods:
-        - __init__(start) 
+        - __init__(start)
     """
 
     # TODO: read random list for testing

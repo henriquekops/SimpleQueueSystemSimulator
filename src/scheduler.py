@@ -12,7 +12,7 @@ class Scheduler:
     - Min-heap representation using b-tree for random event scheduling
     - Methods:
         - __init__()
-        - add()
+        - add(element)
         - next()
     """
 

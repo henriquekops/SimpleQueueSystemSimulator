@@ -6,8 +6,14 @@ class Queue:
     """
     - Responsible for simulating queue
     - Methods:
-        - set_servers(server_list)
-        - handle(time)
+        - __init__(capacity, servers)
+        - is_slot_available()
+        - is_server_available()
+        - was_someone_waiting()
+        - enter()
+        - exit()
+        - update_queue_time(time)
+        - results(global_time)
     """
 
     def __init__(self, capacity:int, servers:int) -> None:
