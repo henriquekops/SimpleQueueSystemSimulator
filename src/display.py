@@ -85,7 +85,7 @@ class Display(tk.Frame):
         c = int(e[2].get())
         m = int(e[3].get())
         n = int(e[4].get())
-        sequence = self.__prd.generate(x, a, c, m, n)
+        sequence = self.__prd.generate(a, b) #self.__prd.generate(x, a, c, m, n)
         x = list(range(0, len(sequence)))
         y = sequence
         self.__line.set_data(x, y)

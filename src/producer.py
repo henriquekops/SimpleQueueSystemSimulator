@@ -12,7 +12,7 @@ class Producer:
         - generate() 
     """
 
-    def __init__(self, x:int, a:int, c:int, m:int):
+    def __init__(self, x:int = 0, a:int = 0, c:int = 0, m:int = 0):
         """
         Params:
             - x: seed to start random sequence
