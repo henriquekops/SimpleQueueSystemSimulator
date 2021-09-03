@@ -5,6 +5,7 @@ from heapq import (
     heappop,
     heappush
 )
+from src.event import Event
 
 class Scheduler:
 
@@ -19,7 +20,7 @@ class Scheduler:
     def __init__(self) -> None:
         self.__heap = []
 
-    def add(self, element):
+    def add(self, element: Event):
         """
         - Insert element at heap
         - Params:
@@ -27,7 +28,7 @@ class Scheduler:
         - Returns:
             - None
         """
-        heappush(self.__heap, element)
+        heappush(self.__heap, (element.time,element))
 
     def next(self):
         """
@@ -37,4 +38,5 @@ class Scheduler:
         - Returns:
             - None
         """
+        # TODO: substituir heapop https://docs.python.org/3/library/heapq.html
         return heappop(self.__heap)

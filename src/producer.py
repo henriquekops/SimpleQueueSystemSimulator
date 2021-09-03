@@ -74,8 +74,7 @@ class Producer:
         self.__x = self.__next(self.__x)
         return self.__get_at_interval(self.__normalize(self.__x), a, b)
 
-    @overload
-    def generate(self) -> float:
+    def generate2(self) -> float:
         """
         - Generate next pseudo random value in sequence 
         - Returns:

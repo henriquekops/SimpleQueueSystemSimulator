@@ -20,25 +20,26 @@ class Simulator:
 
     # TODO: read random list for testing
 
-    def __init__(self, minArrive:int, maxArrive:int, minExit:int, maxExit:int, n:int):
+    def __init__(self, minArrive:int, maxArrive:int, minExit:int, maxExit:int, n:int, capacity:int, servers:int):
         self.__n = n
         self.__global_time = 0
         self.__minArrive = minArrive
         self.__maxArrive = maxArrive
         self.__minExit = minExit
         self.__maxExit = maxExit
-        self.__queue = Queue()
+        self.__queue = Queue(capacity=capacity, servers=servers)
         self.__scheduler = Scheduler()
-        self.__producer = Producer()
+        self.__producer = Producer(x=7, a=4, c=4, m=9)
 
     def init(self, start:int):
-        self.__scheduler(Event(type=EventType.arrive, time=(start)))
+        self.__scheduler.add(Event(type=EventType.arrive, time=(start)))
         while(self.__n > 0):
             # TODO: check for loop finish (self.__n)
-            event: Event = self.__scheduler.next()
+            event: Event = self.__scheduler.next()[1]
+            print(event.time, event.type)
             if event.type == EventType.arrive:
                 self.__arrive(event.time)
-            elif event.type == EventType.exit:
+            elif event.type == EventType.departure:
                 self.__departure(event.time)
             else:
                 print('Not implemented yet (transition)')
@@ -52,9 +53,10 @@ class Simulator:
             if self.__queue.is_server_available():
                 r = self.__producer.generate(self.__minExit, self.__maxExit)
                 self.__scheduler.add(Event(type=EventType.departure, time=(self.__global_time + r)))
-                self.__n -= 1
+                #self.__n -= 1
+
         r = self.__producer.generate(self.__minArrive, self.__maxArrive)
-        self.__scheduler(Event(type=EventType.arrive, time=(self.__global_time + r)))
+        self.__scheduler.add(Event(type=EventType.arrive, time=(self.__global_time + r)))
         self.__n -= 1
 
     def __departure(self, time:float):
@@ -64,5 +66,5 @@ class Simulator:
         self.__queue.exit()
         if self.__queue.was_someone_waiting():
             r = self.__producer.generate(self.__minExit, self.__maxExit)
-            self.__scheduler(Event(type=EventType.departure, time=(self.__global_time + r)))
-            self.__n -= 1
+            self.__scheduler.add(Event(type=EventType.departure, time=(self.__global_time + r)))
+            #self.__n -= 1
