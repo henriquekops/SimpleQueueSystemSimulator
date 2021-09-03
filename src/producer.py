@@ -48,13 +48,15 @@ class Producer:
         
         return x / self.__m
 
-    def __get_at_interval(self, n_x:int, a:int, b:int):
+    def __get_at_interval(self, n_x:int, a:int, b:int) -> float:
         """
         - Find normalized random value inside an interval
         - Params:
             - n_x: normalized random value previously generated
             - a: interval start
             - b: interval end
+        - Returns:
+            - Random normalized value inside interval
         """
 
         return ( (b - a) * n_x ) + a
