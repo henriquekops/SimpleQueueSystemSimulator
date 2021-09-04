@@ -42,11 +42,8 @@ class Queue:
         self.__times[self.__position] += time
 
     def results(self, global_time:float) -> str:
-        return {
-        f""" 
-            Capacity: {self.__capacity}
-            Servers: {self.__servers}
-            Loss: {self.__loss}
-            Times: {self.__times}
-            Percents: {[( t / global_time ) for t in self.__times]}
-        """}
+        return f'\tCapacity: {self.__capacity}\n\
+        Servers: {self.__servers}\n\
+        Loss: {self.__loss}\n\
+        Times: {self.__times}\n\
+        Percents: {[( t / global_time ) for t in self.__times]}'
