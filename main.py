@@ -8,6 +8,13 @@ from src import (
     display
 )
 
+"""
+TODO: 
+    - Ler arquivo de entrada (cuidar criação do Producer() na classe Simulator())
+    - Permitir a leitura de uma sequência de 'aleatórios' previamente calculados
+    - Verificar se o report está OK (bater com a classe disponibilizada pelo professor)
+"""
+
 if __name__ == '__main__':
     tprint("Queue simulator", font="cybermedium")
     # root = tk.Tk()
