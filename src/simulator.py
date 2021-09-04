@@ -57,7 +57,6 @@ class Simulator:
             if self.__queue.is_server_available():
                 r = self.__producer.generate(self.__minExit, self.__maxExit)
                 self.__scheduler.add(Event(type=EventType.departure, time=(self.__global_time + r), id=self.__event_id))
-                self.__event_id += 1
                 print(f'[{event.id}] Im being attended, will leave at: {self.__global_time + r}')
                 self.__n -= 1
         else:
@@ -76,6 +75,5 @@ class Simulator:
         if self.__queue.was_someone_waiting():
             r = self.__producer.generate(self.__minExit, self.__maxExit)
             self.__scheduler.add(Event(type=EventType.departure, time=(self.__global_time + r), id=self.__event_id))
-            self.__event_id += 1
             print(f'[{event.id}] Letting next come, it will leave at: {self.__global_time + r}')
             self.__n -= 1
