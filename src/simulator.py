@@ -38,29 +38,31 @@ class Simulator:
         while(self.__n > 0):
             # TODO: check for loop finish (self.__n)
             event: Event = self.__scheduler.next()[1]
-            print(f'[ Event incoming: time={event.time} type={event.type} id={event.id} ]')
+            print(f'\n>>> [ Event incoming: time={event.time} type={event.type} id={event.id} ]\n')
             if event.type == EventType.arrive:
                 self.__arrive(event)
             elif event.type == EventType.departure:
                 self.__departure(event)
             else:
                 print('Not implemented yet (transition)')
-        print(f'Simulation ended, report:\n{self.__queue.results(self.__global_time)}')
+        
+        print("#####################################################################")
+        print(f'\nSimulation ended, report:\n{self.__queue.results(self.__global_time)}\n')
 
     def __arrive(self, event:Event) -> None:
         delta = event.time - self.__global_time
         self.__global_time = event.time
         self.__queue.update_queue_time(delta)
         if self.__queue.is_slot_available():
-            print(f'[{event.id}] Entered Queue!')
+            print(f'\n[{event.id}] Entered Queue!')
             self.__queue.enter()
             if self.__queue.is_server_available():
                 r = self.__producer.generate(self.__minExit, self.__maxExit)
                 self.__scheduler.add(Event(type=EventType.departure, time=(self.__global_time + r), id=self.__event_id))
-                print(f'[{event.id}] Im being attended, will leave at: {self.__global_time + r}')
+                print(f'[{event.id}] Im being attended, will leave at: {self.__global_time + r}\n')
                 self.__n -= 1
         else:
-            print(f'[{event.id}] Queue is full, im leaving...')
+            print(f'[{event.id}] Queue is full, im leaving...\n')
         r = self.__producer.generate(self.__minArrive, self.__maxArrive)
         self.__scheduler.add(Event(type=EventType.arrive, time=(self.__global_time + r), id=self.__event_id))
         self.__event_id += 1
