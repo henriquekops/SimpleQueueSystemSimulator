@@ -11,7 +11,7 @@ from src import (
 help =         """ You can fowlling the model:\n 
             python3 main.py [minArrive] [maxArrive] [minExit] [maxExit] [n] [capacity] [servers]
             
-            Glosary:
+            Glossary:
 
             minArrive ->
             maxArrive ->
