@@ -29,7 +29,7 @@ class Simulator:
         self.__maxExit = maxExit
         self.__queue = Queue(capacity=capacity, servers=servers)
         self.__scheduler = Scheduler()
-        self.__producer = Producer(x=7, a=4, c=4, m=9)
+        self.__producer = Producer(x=3, a=33, c=11, m=2147483643) # TODO: x as parameter
         self.__event_id = 0
 
     def init(self, start:int):
@@ -38,7 +38,7 @@ class Simulator:
         while(self.__n > 0):
             # TODO: check for loop finish (self.__n)
             event: Event = self.__scheduler.next()[1]
-            print(f'\n>>> [ Event incoming: time={event.time} type={event.type} id={event.id} ]\n')
+            # print(f'\n>>> [ Event incoming: time={event.time} type={event.type} id={event.id} ]\n')
             if event.type == EventType.arrive:
                 self.__arrive(event)
             elif event.type == EventType.departure:
@@ -54,15 +54,17 @@ class Simulator:
         self.__global_time = event.time
         self.__queue.update_queue_time(delta)
         if self.__queue.is_slot_available():
-            print(f'\n[{event.id}] Entered Queue!')
+            #print(f'\n[{event.id}] Entered Queue!')
             self.__queue.enter()
             if self.__queue.is_server_available():
                 r = self.__producer.generate(self.__minExit, self.__maxExit)
                 self.__scheduler.add(Event(type=EventType.departure, time=(self.__global_time + r), id=self.__event_id))
-                print(f'[{event.id}] Im being attended, will leave at: {self.__global_time + r}\n')
+                #print(f'[{event.id}] Im being attended, will leave at: {self.__global_time + r}\n')
                 self.__n -= 1
         else:
-            print(f'[{event.id}] Queue is full, im leaving...\n')
+            pass
+            # TODO: Loss++
+            #print(f'[{event.id}] Queue is full, im leaving...\n')
         r = self.__producer.generate(self.__minArrive, self.__maxArrive)
         self.__scheduler.add(Event(type=EventType.arrive, time=(self.__global_time + r), id=self.__event_id))
         self.__event_id += 1
@@ -73,9 +75,9 @@ class Simulator:
         self.__global_time = event.time
         self.__queue.update_queue_time(delta)
         self.__queue.exit()
-        print(f'[{event.id}] Leaving queue!')
+        #print(f'[{event.id}] Leaving queue!')
         if self.__queue.was_someone_waiting():
             r = self.__producer.generate(self.__minExit, self.__maxExit)
             self.__scheduler.add(Event(type=EventType.departure, time=(self.__global_time + r), id=self.__event_id))
-            print(f'[{event.id}] Letting next come, it will leave at: {self.__global_time + r}')
+            #print(f'[{event.id}] Letting next come, it will leave at: {self.__global_time + r}')
             self.__n -= 1

@@ -48,7 +48,7 @@ if __name__ == '__main__':
             Simulator(minArrive=args[0], maxArrive=args[1], \
                         minExit=args[2], maxExit=args[3], \
                         n=args[4], capacity=args[5], servers=args[6] \
-                    ).init(2)
+                    ).init(3)
 
         except Exception as e:
             print(e)
