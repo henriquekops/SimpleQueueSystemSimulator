@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import overload
 
 class Producer:
 
@@ -9,7 +8,11 @@ class Producer:
     - Generates a sequence of random numbers using linear congruent method
     - Methods:
         - __init__(x, a, c, m, n)
-        - generate() 
+        - __next(prev_x)
+        - __normalize(x)
+        - __get_at_interval(n_x, a, b)
+        - generate()
+        - generate2()
     """
 
     def __init__(self, x:int = 0, a:int = 0, c:int = 0, m:int = 0):

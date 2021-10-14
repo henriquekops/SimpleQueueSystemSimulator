@@ -38,13 +38,4 @@ class Scheduler:
         - Returns:
             - None
         """
-        # TODO: substituir heapop https://docs.python.org/3/library/heapq.html
         return heappop(self.__heap)
-
-
-# Simulation ended, report:
-#         Capacity: 5
-#         Servers: 1
-#         Loss: 0
-#         Times: [4.5555555555555545, 15.111111111111109, 0.0, 0.0, 0.0, 0.0]
-#         Percents: [0.23163841807909602, 0.768361581920904, 0.0, 0.0, 0.0, 0.0]

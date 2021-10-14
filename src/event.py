@@ -25,7 +25,6 @@ class Event:
         - __init__(type, time)
     """
 
-    def __init__(self, type:EventType, time:float, id:int) -> None:
-        self.id = id
+    def __init__(self, type:EventType, time:float) -> None:
         self.type = type
         self.time = time

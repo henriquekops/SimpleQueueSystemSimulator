@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 class Queue:
 
     """
     - Responsible for simulating queue
     - Methods:
-        - __init__(capacity, servers)
+        - __init__(capacity, servers, minArrival, maxArrival, minExit, maxExit)
         - is_slot_available()
         - is_server_available()
         - was_someone_waiting()
@@ -16,10 +17,14 @@ class Queue:
         - results(global_time)
     """
 
-    def __init__(self, capacity:int, servers:int) -> None:
+    def __init__(self, capacity:int, servers:int, minArrival:int, maxArrival:int, minExit:int, maxExit:int) -> None:
         self.__times = [0.0] * ( capacity + 1 ) # TODO: when infinite??
         self.__capacity = capacity
         self.__servers = servers
+        self.minArrival = minArrival
+        self.maxArrival = maxArrival
+        self.minExit = minExit
+        self.maxExit = maxExit
         self.__loss = 0
         self.__position = 0
 

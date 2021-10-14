@@ -9,24 +9,27 @@ from src import (
 )
 
 help =         """ You can fowlling the model:\n 
-            python3 main.py [minArrive] [maxArrive] [minExit] [maxExit] [n] [capacity] [servers]
+            python3 main.py [n] [use_loss] [start] [capacities] [servers] [minArrivals] [maxArrivals] [minExits] [maxExits]
             
             Glossary:
 
-            minArrive ->
-            maxArrive ->
-            minExit   ->
-            maxExit   ->
-            n         ->
-            capacity  ->
-            servers   ->
+            n           ->
+            use_loss    ->
+            start       ->
+            capacities  ->
+            servers     ->
+            minArrivals ->
+            maxArrivals ->
+            minExits    ->
+            maxExits    ->
+            
+            
             """
 
 """
 TODO: 
     - Ler arquivo de entrada (cuidar criação do Producer() na classe Simulator())
     - Permitir a leitura de uma sequência de 'aleatórios' previamente calculados
-    - Verificar se o report está OK (bater com a classe disponibilizada pelo professor)
 """
 
 if __name__ == '__main__':
@@ -34,22 +37,27 @@ if __name__ == '__main__':
     tprint("Queue simulator", font="cybermedium")
     
     args = argv
-    if args[1] == 'teacher':
+
+    if len(argv) == 1:
+        print(help)
+
+    elif args[1] == 'teacher':
         root = tk.Tk()
         d = display.Display(master=root)
         d.mainloop()
-    
-    elif args[1] == 'help':
-        print(help)
 
     else:
         try:
-            args = [int(i) for i in args if i.isnumeric()]
-            Simulator(minArrive=args[0], maxArrive=args[1], \
-                        minExit=args[2], maxExit=args[3], \
-                        n=args[4], capacity=args[5], servers=args[6] \
-                    ).init(3)
-
+            # args = [int(i) for i in args if i.isnumeric()]
+            Simulator(n=int(args[1]), use_loss=bool([2])).init(
+                start=int(args[3]),
+                capacities=[int(x) for x in list(args[4])],
+                servers=[int(x) for x in list(args[5])],
+                minArrivals=[int(x) for x in list(args[6])],
+                maxArrivals=[int(x) for x in list(args[7])],
+                minExits=[int(x) for x in list(args[8])],
+                maxExits=[int(x) for x in list(args[9])]
+            )
         except Exception as e:
             print(e)
             print(help)
