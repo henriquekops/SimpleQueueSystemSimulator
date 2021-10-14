@@ -51,6 +51,8 @@ class Simulator:
         self.__loss = 0
 
     def init(self, start:int, capacities:List, servers:List, minArrivals:List, maxArrivals:List, minExits:List, maxExits:List):
+        print(start, capacities, servers, minArrivals, maxArrivals, minExits, maxExits)
+        
         self.__start_queues(capacities, servers, minArrivals, maxArrivals, minExits, maxExits)
         self.__scheduler.add(Event(type=EventType.arrive, time=(start)))
         while(self.__n > 0):
@@ -95,13 +97,16 @@ class Simulator:
         queue_1.exit()
         if queue_1.was_someone_waiting():
             self.__schedule(EventType.transition, queue_1.minExit, queue_1.maxExit)
+            
         if queue_2.is_slot_available():
             queue_2.enter()
             if queue_2.is_server_available():
                 self.__schedule(EventType.departure, queue_2.minExit, queue_2.maxExit)
+                
         else:
             if self.__use_loss:
                 self.__loss += 1
+                
 
     def __start_queues(self, capacities:List, servers:List, minArrivals:List, maxArrivals:List, minExits:List, maxExits:List) -> None:
         idx = 0

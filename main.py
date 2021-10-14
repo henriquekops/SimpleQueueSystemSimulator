@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import tkinter as tk
+import json
+
+from configparser import ConfigParser
 from sys import argv
 from art import tprint
-import tkinter as tk
 from src.simulator import Simulator
 from src import (
     display
@@ -34,30 +37,29 @@ TODO:
 
 if __name__ == '__main__':
     
+    conf = ConfigParser()
+    conf.read('config.cfg')
+
     tprint("Queue simulator", font="cybermedium")
     
     args = argv
 
-    if len(argv) == 1:
-        print(help)
+    try:
+        if args[1] == 'teacher':
+            root = tk.Tk()
+            d = display.Display(master=root)
+            d.mainloop()
+    except:
+        pass
 
-    elif args[1] == 'teacher':
-        root = tk.Tk()
-        d = display.Display(master=root)
-        d.mainloop()
 
-    else:
-        try:
-            # args = [int(i) for i in args if i.isnumeric()]
-            Simulator(n=int(args[1]), use_loss=bool([2])).init(
-                start=int(args[3]),
-                capacities=[int(x) for x in list(args[4])],
-                servers=[int(x) for x in list(args[5])],
-                minArrivals=[int(x) for x in list(args[6])],
-                maxArrivals=[int(x) for x in list(args[7])],
-                minExits=[int(x) for x in list(args[8])],
-                maxExits=[int(x) for x in list(args[9])]
-            )
-        except Exception as e:
-            print(e)
-            print(help)
+    # args = [int(i) for i in args if i.isnumeric()]
+    Simulator(n=int(conf.get('Queue','n')), use_loss=bool(conf.get('Queue','use_loss'))).init(
+        start=int(conf.get('Queue','start')),
+        capacities=[int(x) for x in json.loads(conf.get('Queue','capacities'))],
+        servers=[int(x) for x in json.loads(conf.get('Queue','servers'))],
+        minArrivals=[int(x) for x in json.loads(conf.get('Queue','minArrivals'))],
+        maxArrivals=[int(x) for x in json.loads(conf.get('Queue','maxArrivals'))],
+        minExits=[int(x) for x in json.loads(conf.get('Queue','minExits'))],
+        maxExits=[int(x) for x in json.loads(conf.get('Queue','maxExits'))]
+    )
