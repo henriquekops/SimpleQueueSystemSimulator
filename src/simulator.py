@@ -50,11 +50,10 @@ class Simulator:
         self.__use_loss = use_loss
         self.__loss = 0
 
-    def init(self, start:int, capacities:List, servers:List, minArrivals:List, maxArrivals:List, minExits:List, maxExits:List):
-        print(start, capacities, servers, minArrivals, maxArrivals, minExits, maxExits)
-        
+    def init(self, start:int, capacities:List, servers:List, minArrivals:List, maxArrivals:List, minExits:List, maxExits:List):        
         self.__start_queues(capacities, servers, minArrivals, maxArrivals, minExits, maxExits)
         self.__scheduler.add(Event(type=EventType.arrive, time=(start)))
+        
         while(self.__n > 0):
             event:Event = self.__scheduler.next()[1]
             if event.type == EventType.arrive:
@@ -66,11 +65,11 @@ class Simulator:
         
         queue:Queue
         for queue in self.__queues:
-            print(f'\nSimulation ended, report:\n{queue.results(self.__global_time)}\n')
+            print(f'\nSimulation ended for queue {self.__queues.index(queue)}:\n{queue.results(self.__global_time)}\n')
 
     def __arrive(self, event:Event, simulation_type:SimulationType) -> None:
         self.__compute_time(event)
-        first_queue:Queue = self.__queues[0]
+        first_queue:Queue = self.__queues[0]  # TODO: How do i know which queue is the first?
         if first_queue.is_slot_available():
             first_queue.enter()
             if first_queue.is_server_available():
@@ -85,15 +84,15 @@ class Simulator:
 
     def __departure(self, event:Event):
         self.__compute_time(event)
-        last_queue:Queue = self.__queues[-1]
+        last_queue:Queue = self.__queues[-1] # TODO: How do i know which queue is the last?
         last_queue.exit()
         if last_queue.was_someone_waiting():
             self.__schedule(EventType.departure, last_queue.minExit, last_queue.maxExit)
 
     def __transition(self, event: Event):
         self.__compute_time(event)
-        queue_1:Queue = self.__queues[0]
-        queue_2:Queue = self.__queues[1]
+        queue_1:Queue = self.__queues[0] # TODO: how do i know from where events are transitioning
+        queue_2:Queue = self.__queues[1] # TODO: how do i know to where events are transitioning
         queue_1.exit()
         if queue_1.was_someone_waiting():
             self.__schedule(EventType.transition, queue_1.minExit, queue_1.maxExit)
@@ -109,10 +108,8 @@ class Simulator:
                 
 
     def __start_queues(self, capacities:List, servers:List, minArrivals:List, maxArrivals:List, minExits:List, maxExits:List) -> None:
-        idx = 0
         for c, s, min_a, max_a, min_e, max_e in zip(capacities, servers, minArrivals, maxArrivals, minExits, maxExits):
             self.__queues.append(Queue(c, s, min_a, max_a, min_e, max_e))
-            idx += 1
 
     def __schedule(self, event_type:EventType, min:int, max:int):
         r = self.__producer.generate(min, max)

@@ -1,0 +1,38 @@
+control:
+  start: 2
+  loss: true
+  n: 100
+  inputs:
+    - 1
+    - 2
+
+queues:
+  - servers: 1
+    capacity: 5
+    minArrival: 2
+    maxArrival: 2
+    minExit: 5
+    maxExit: 5
+
+  - servers: 2
+    capacity: 5
+    minExit: 5
+    maxExit: 5
+  
+  - servers: 3
+    capacity: 5
+    minArrival: 3
+    maxArrival: 3
+    minExit: 5
+    maxExit: 5
+
+network:
+  - source: 1
+    target: 2
+    weight: 0.8
+  - source: 1
+    target: 3
+    weight: 0.2
+  - source: 3
+    target: 1
+    weight: 0.5

@@ -38,7 +38,7 @@ TODO:
 if __name__ == '__main__':
     
     conf = ConfigParser()
-    conf.read('config.cfg')
+    conf.read('setup.cfg')
 
     tprint("Queue simulator", font="cybermedium")
     
@@ -52,14 +52,15 @@ if __name__ == '__main__':
     except:
         pass
 
-
-    # args = [int(i) for i in args if i.isnumeric()]
-    Simulator(n=int(conf.get('Queue','n')), use_loss=bool(conf.get('Queue','use_loss'))).init(
-        start=int(conf.get('Queue','start')),
-        capacities=[int(x) for x in json.loads(conf.get('Queue','capacities'))],
-        servers=[int(x) for x in json.loads(conf.get('Queue','servers'))],
-        minArrivals=[int(x) for x in json.loads(conf.get('Queue','minArrivals'))],
-        maxArrivals=[int(x) for x in json.loads(conf.get('Queue','maxArrivals'))],
-        minExits=[int(x) for x in json.loads(conf.get('Queue','minExits'))],
-        maxExits=[int(x) for x in json.loads(conf.get('Queue','maxExits'))]
-    )
+    Simulator(
+            n=int(conf.get('Queue','n')), 
+            use_loss=bool(conf.get('Queue','use_loss'))
+        ).init(
+            start=int(conf.get('Queue','start')),
+            capacities=[int(x) for x in json.loads(conf.get('Queue','capacities'))],
+            servers=[int(x) for x in json.loads(conf.get('Queue','servers'))],
+            minArrivals=[int(x) for x in json.loads(conf.get('Queue','minArrivals'))],
+            maxArrivals=[int(x) for x in json.loads(conf.get('Queue','maxArrivals'))],
+            minExits=[int(x) for x in json.loads(conf.get('Queue','minExits'))],
+            maxExits=[int(x) for x in json.loads(conf.get('Queue','maxExits'))]
+        )

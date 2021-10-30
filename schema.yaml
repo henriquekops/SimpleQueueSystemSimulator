@@ -1,0 +1,24 @@
+control:
+  start: num(min=0, required=True)
+  loss: bool(required=True)
+  n: int(min=1, required=True)
+  inputs: list(int(min=1, required=True))
+
+queues:
+  list(include('queue'), min=1)
+
+network:
+  list(include('n_queue'), min=0)
+---
+queue:
+  servers: num(min=0, required=True)
+  capacity: num(min=0, required=False)
+  minArrival: num(min=0, required=False)
+  maxArrival: num(min=0, required=False)
+  minExit: num(min=0, required=True)
+  maxExit: num(min=0, required=True)
+
+n_queue:
+  source: int(min=1)
+  target: int(min=1)
+  weight: num(min=0.1, max=1)
