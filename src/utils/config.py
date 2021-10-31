@@ -11,7 +11,7 @@ from yamale import (
 
 class YamlParser:
 
-    schema = make_schema('schema.yaml')
+    schema = make_schema('utils/config.yaml')
 
     def __init__(self) -> None:
         pass
