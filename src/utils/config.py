@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from pprint import pprint # TODO: drop
+
+# built-in dependencies
+from typing import Tuple
+
+# external dependencies
+from yaml import full_load
 from yamale import (
-    validate,
+    validate as y_validate,
     make_data,
     make_schema,
     YamaleError
@@ -11,20 +18,35 @@ from yamale import (
 
 class YamlParser:
 
-    schema = make_schema('utils/config.yaml')
+    schema = make_schema('static/schema.yaml')
 
-    def __init__(self) -> None:
-        pass
+    def validate(self, file_path:str) -> Tuple[bool, YamaleError]:
+        """
+        Schema validation for yaml input
+        """
+        try:
+            y_validate(self.schema, make_data(file_path))
+            return True, None
+        except YamaleError as e:
+            return False, e
 
-    def validate(self, file_path: str):
-        validate(self.schema, make_data(file_path))
+    def read(self, file_path:str) -> dict:
+        """
+        Load yaml data into dict
+        """
+        try:
+            with open(file_path) as f: 
+                return full_load(f)
+        except:
+            return dict()
 
 
 # testing
+
+# use below command at project root (SimpleQueueSimulator/):
+#   $ python src/utils/config.py
+
 if __name__ == '__main__':
     p = YamlParser()
-    try:
-        p.validate('example.yaml')
-        print('valid')
-    except YamaleError as e:
-        print(e)
+    pprint(p.validate('example.yaml')) # validate schema
+    pprint(p.read('example.yaml')) # show loaded data

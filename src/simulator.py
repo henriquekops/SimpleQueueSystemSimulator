@@ -35,6 +35,7 @@ class Simulator:
     """
 
     # TODO: read random list for testing
+    # TODO: read yaml and generate network
     
     X = 3
     A = 33
