@@ -1,8 +1,14 @@
 control:
-  start: num(min=0, required=True)
-  loss: bool(required=True)
   n: int(min=1, required=True)
+  start: num(min=0, required=True)
+  use_loss: bool(required=True)
   inputs: list(int(min=1, required=True))
+
+pseudo_random_generation:
+  x: num(min=0, required=True)
+  a: num(min=0, required=True)
+  c: num(min=0, required=True)
+  m: num(min=0, required=True)
 
 queues:
   list(include('queue'), min=1)

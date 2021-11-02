@@ -1,34 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import tkinter as tk
-import json
+
+# built-in dependencies
+from sys import (
+    argv,
+    exit
+)
+from os.path import exists
+
+# project dependencies
 from src.utils.config import YamlParser
-from configparser import ConfigParser
-from sys import argv
-from art import tprint
 from src.simulator import Simulator
 from src.network import Network
-from src.ui import (
-    display
-)
+from src.producer import Producer
 
-help =         """ You can fowlling the model:\n 
-            python3 main.py [n] [use_loss] [start] [capacities] [servers] [minArrivals] [maxArrivals] [minExits] [maxExits]
-            
-            Glossary:
+# external dependencies
+from art import tprint
 
-            n           ->
-            use_loss    ->
-            start       ->
-            capacities  ->
-            servers     ->
-            minArrivals ->
-            maxArrivals ->
-            minExits    ->
-            maxExits    ->
-            
-            
-            """
+
+HELP =  """ Run:\n\tpython3 main.py <your-setup>.yaml\nGenerate:\n\t<TBD>"""
+
 
 """
 TODO: 
@@ -37,17 +28,33 @@ TODO:
 """
 
 if __name__ == '__main__':
-    p = YamlParser()    
-    is_valid, err = p.validate('examples/example.yaml')
+    
+    tprint("Queue simulator", font="cybermedium")
+
+    if len(argv) != 2:
+        print(HELP)
+        exit(0)
+
+    yml = argv[1]
+
+    if not exists(yml):
+        print(f"File '{yml}' not found!")
+        exit(0)
+
+    parser = YamlParser()
+    is_valid, err = parser.validate(yml)
     
     if is_valid:
 
-        yml_data = p.read('examples/example.yaml')
-        for k, v in yml_data.items():
-            print(f"{k} : {v} \n")
-    
-        net = Network(yml_data=yml_data)
-        print(net)
+        yml_data = parser.read(yml)
+
+        producer = Producer(yml_data=yml_data.get('pseudo_random_generation'))
+        network = Network(yml_data=yml_data.get('network'))
+
+        # TODO: what about 'inputs' field?
+        yml_control = yml_data.get('control')
+        simulator = Simulator(yml_control.get('n'), yml_control.get('use_loss'), network, producer)
+        simulator.start(yml_control.get('start'))
     
     else:
         print(err)

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # project dependencies
+from src.network import Network
 from src.queue import Queue
 from src.scheduler import Scheduler
 from src.producer import Producer
@@ -12,12 +13,6 @@ from src.event import (
 
 # built-in dependencies
 from typing import List
-from enum import Enum
-
-class SimulationType(Enum):
-    
-    simple = 1
-    tandem = 2
 
 
 class Simulator:
@@ -37,28 +32,22 @@ class Simulator:
     # TODO: read random list for testing
     # TODO: read yaml and generate network
     
-    X = 3
-    A = 33
-    C = 11
-    M = 2147483643
-
-    def __init__(self, n:int, use_loss):
+    def __init__(self, n:int, use_loss:bool, network:Network, producer:Producer):
         self.__n = n
+        self.__network = network
         self.__global_time = 0
-        self.__queues = []
         self.__scheduler = Scheduler()
-        self.__producer = Producer(x=self.X, a=self.A, c=self.C, m=self.M)
+        self.__producer = producer
         self.__use_loss = use_loss
         self.__loss = 0
 
-    def init(self, start:int, capacities:List, servers:List, minArrivals:List, maxArrivals:List, minExits:List, maxExits:List):        
-        self.__start_queues(capacities, servers, minArrivals, maxArrivals, minExits, maxExits)
+    def init(self, start:int):        
         self.__scheduler.add(Event(type=EventType.arrive, time=(start)))
         
         while(self.__n > 0):
             event:Event = self.__scheduler.next()[1]
             if event.type == EventType.arrive:
-                self.__arrive(event, SimulationType.tandem) # TODO: drop hard coded
+                self.__arrive(event)
             elif event.type == EventType.departure:
                 self.__departure(event)
             elif event.type == EventType.transition:
@@ -68,16 +57,17 @@ class Simulator:
         for queue in self.__queues:
             print(f'\nSimulation ended for queue {self.__queues.index(queue)}:\n{queue.results(self.__global_time)}\n')
 
-    def __arrive(self, event:Event, simulation_type:SimulationType) -> None:
+    def __arrive(self, event:Event) -> None:
         self.__compute_time(event)
         first_queue:Queue = self.__queues[0]  # TODO: How do i know which queue is the first?
         if first_queue.is_slot_available():
             first_queue.enter()
             if first_queue.is_server_available():
-                if simulation_type == SimulationType.simple:
-                    self.__schedule(EventType.departure, first_queue.minExit, first_queue.maxExit)
-                elif simulation_type == SimulationType.tandem:
-                    self.__schedule(EventType.transition, first_queue.minExit, first_queue.maxExit)
+                pass
+                # if #queue does not has next:
+                #     self.__schedule(EventType.departure, first_queue.minExit, first_queue.maxExit)
+                # elif # queue has next:
+                #     self.__schedule(EventType.transition, first_queue.minExit, first_queue.maxExit)
         else:
             if self.__use_loss:
                 self.__loss += 1
@@ -106,11 +96,6 @@ class Simulator:
         else:
             if self.__use_loss:
                 self.__loss += 1
-                
-
-    def __start_queues(self, capacities:List, servers:List, minArrivals:List, maxArrivals:List, minExits:List, maxExits:List) -> None:
-        for c, s, min_a, max_a, min_e, max_e in zip(capacities, servers, minArrivals, maxArrivals, minExits, maxExits):
-            self.__queues.append(Queue(c, s, min_a, max_a, min_e, max_e))
 
     def __schedule(self, event_type:EventType, min:int, max:int):
         r = self.__producer.generate(min, max)

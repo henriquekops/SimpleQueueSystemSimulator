@@ -15,7 +15,7 @@ class Producer:
         - generate2()
     """
 
-    def __init__(self, x:int = 0, a:int = 0, c:int = 0, m:int = 0):
+    def __init__(self, yml_data:dict):
         """
         Params:
             - x: seed to start random sequence
@@ -24,12 +24,12 @@ class Producer:
             - m: max random value in sequence
         """
         
-        self.__x = x
-        self.__a = a
-        self.__c = c
-        self.__m = m
+        self.__x:float = yml_data.get('x')
+        self.__a:float = yml_data.get('a')
+        self.__c:float = yml_data.get('c')
+        self.__m:float = yml_data.get('m')
 
-    def __next(self, prev_x) -> int:
+    def __next(self, prev_x) -> float:
         """
         - Computes next number in random sequence
         - Params:
@@ -40,7 +40,7 @@ class Producer:
         
         return ((self.__a * prev_x) + self.__c) % self.__m
 
-    def __normalize(self, x:int) -> float:
+    def __normalize(self, x:float) -> float:
         """
         - Normalizes the random number at the interval [0;1)
         - Param:
@@ -51,7 +51,7 @@ class Producer:
         
         return x / self.__m
 
-    def __get_at_interval(self, n_x:int, a:int, b:int) -> float:
+    def __get_at_interval(self, n_x:float, a:float, b:float) -> float:
         """
         - Find normalized random value inside an interval
         - Params:
@@ -64,7 +64,7 @@ class Producer:
 
         return ( (b - a) * n_x ) + a
 
-    def generate(self, a, b) -> float:
+    def generate(self, a:float, b:float) -> float:
         """
         - Generates random sequence using linear congruent method
         - Params:
@@ -86,4 +86,3 @@ class Producer:
         
         self.__x = self.__next(self.__x)
         return self.__normalize(self.__x)
-
