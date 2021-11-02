@@ -3,16 +3,22 @@
 
 # project dependencies
 from src.queue import Queue
-from src.utils.config import YamlParser
+
 
 class Network:
 
     __OBJ = 'object'
     __TGT = 'targets'
 
-    def __init__(self, yml_data: YamlParser) -> None:
+    def __init__(self, yml_data: dict) -> None:
         self.__network = dict()
         self.__builder(yml_data)
+
+    def __repr__(self) -> str:
+        """
+        To string
+        """
+        return self.__network.__str__()
 
     def add(self, id:int, queue:Queue) -> None:
         """
@@ -41,34 +47,27 @@ class Network:
         """
         return self.__network[id][self.__TGT]
     
-    def __chack_param(self, dict_yml: dict):
-        if 'minArrival' not in dict_yml.keys():
-            dict_yml['minArrival'] = 0
-            
-        if 'maxArrival' not in dict_yml.keys():
-            dict_yml['maxArrival'] = 0
-    
-    def __builder(self, yml_data):
-        
-        for queue in yml_data['queues']:
-            
-            self.__chack_param(dict_yml=queue)
-            queue_aux = Queue(capacity=queue['capacity'], 
-                              servers=queue['servers'], 
-                              minArrival=queue['minArrival'], 
-                              maxArrival=queue['maxArrival'], 
-                              minExit=queue['minExit'], 
-                              maxExit=queue['maxExit'])
-            
-            id = yml_data['queues'].index(queue) + 1
-            self.add(id=id, queue=queue)
-            
+    def __builder(self, yml_data: dict):
+        id = 0
+        for yml_queue in yml_data['queues']:
+            id += 1
+            self.add(
+                id=id,
+                queue=Queue(
+                    capacity=yml_queue.get('capacity'), 
+                    servers=yml_queue.get('servers'), 
+                    minArrival=yml_queue.get('minArrival'), 
+                    maxArrival=yml_queue.get('maxArrival'), 
+                    minExit=yml_queue.get('minExit'), 
+                    maxExit=yml_queue.get('maxExit')
+                )
+            )
         for queue_net in yml_data['network']:
-            self.chain(source=queue_net['source'], target=queue_net['target'], weight=queue_net['weight'])
-    
-    def show(self):
-        for k, v in self.__network.items():
-            print(f"{k} : {v} \n")
+            self.chain(
+                source=queue_net['source'],
+                target=queue_net['target'],
+                weight=queue_net['weight']
+            )
     
 
 # Example of this network

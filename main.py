@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import tkinter as tk
 import json
-
 from src.utils.config import YamlParser
 from configparser import ConfigParser
 from sys import argv
@@ -38,19 +37,21 @@ TODO:
 """
 
 if __name__ == '__main__':
+    p = YamlParser()    
+    is_valid, err = p.validate('examples/example.yaml')
+    
+    if is_valid:
 
-    p = YamlParser()
-    p.validate('example.yaml')
-    yml_data = p.read('example.yaml')
+        yml_data = p.read('examples/example.yaml')
+        for k, v in yml_data.items():
+            print(f"{k} : {v} \n")
     
-    for k, v in yml_data.items():
-        print(f"{k} : {v} \n")
+        net = Network(yml_data=yml_data)
+        print(net)
     
-    net = Network(yml_data=yml_data)
-    net.show()
+    else:
+        print(err)
     
-    
-        
 #    conf = ConfigParser()
 #    conf.read('setup.cfg')
 #

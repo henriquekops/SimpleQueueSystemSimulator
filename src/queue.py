@@ -17,8 +17,8 @@ class Queue:
         - results(global_time)
     """
 
-    def __init__(self, capacity:int, servers:int, minArrival:int, maxArrival:int, minExit:int, maxExit:int) -> None:
-        self.__times = [0.0] * ( capacity + 1 ) # TODO: when infinite??
+    def __init__(self, capacity:int=0, servers:int=0, minArrival:int=0, maxArrival:int=0, minExit:int=0, maxExit:int=0) -> None:
+        self.__times = []
         self.__capacity = capacity
         self.__servers = servers
         self.minArrival = minArrival
@@ -27,6 +27,16 @@ class Queue:
         self.maxExit = maxExit
         self.__loss = 0
         self.__position = 0
+
+    def __repr__(self):
+        return str({
+            "capacity": self.__capacity,
+            "servers": self.__servers,
+            "minArrival": self.minArrival,
+            "maxArrival": self.minArrival,
+            "minExit": self.minExit,
+            "maxExit": self.maxExit
+        })
 
     def is_slot_available(self) -> bool:
         return self.__position < self.__capacity
@@ -47,8 +57,10 @@ class Queue:
         self.__times[self.__position] += time
 
     def results(self, global_time:float) -> str:
-        return f'\tCapacity: {self.__capacity}\n\
-        Servers: {self.__servers}\n\
-        Loss: {self.__loss}\n\
-        Times: {self.__times}\n\
-        Percents: {[( t / global_time ) for t in self.__times]}'
+        return {
+            "capacity": self.__capacity,
+            "servers": self.__servers,
+            "loss": self.__loss,
+            "times": self.__times,
+            "percents": [( t / global_time ) for t in self.__times]
+        }
