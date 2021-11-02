@@ -53,37 +53,14 @@ if __name__ == '__main__':
 
         # TODO: what about 'inputs' field?
         yml_control = yml_data.get('control')
-        simulator = Simulator(yml_control.get('n'), yml_control.get('use_loss'), network, producer)
+        simulator = Simulator(yml_control.get('n'), network, producer)
         simulator.start(yml_control.get('start'))
     
     else:
         print(err)
-    
-#    conf = ConfigParser()
-#    conf.read('setup.cfg')
-#
-#    tprint("Queue simulator", font="cybermedium")
-#    
-#    args = argv
-#
-#
-#    try:
-#        if args[1] == 'teacher':
-#            root = tk.Tk()
+
+
+# TODO: Recreate UI
+# root = tk.Tk()
 #            d = display.Display(master=root)
 #            d.mainloop()
-#    except:
-#       pass
-#
-#    Simulator(
-#            n=int(conf.get('Queue','n')), 
-#            use_loss=bool(conf.get('Queue','use_loss'))
-#        ).init(
-#            start=int(conf.get('Queue','start')),
-#            capacities=[int(x) for x in json.loads(conf.get('Queue','capacities'))],
-#            servers=[int(x) for x in json.loads(conf.get('Queue','servers'))],
-#            minArrivals=[int(x) for x in json.loads(conf.get('Queue','minArrivals'))],
-#            maxArrivals=[int(x) for x in json.loads(conf.get('Queue','maxArrivals'))],
-#            minExits=[int(x) for x in json.loads(conf.get('Queue','minExits'))],
-#            maxExits=[int(x) for x in json.loads(conf.get('Queue','maxExits'))]
-#        )

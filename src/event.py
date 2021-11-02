@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# built-in dependencies
 from enum import Enum
+
 
 class EventType(Enum):
 
@@ -25,6 +27,8 @@ class Event:
         - __init__(type, time)
     """
 
-    def __init__(self, type:EventType, time:float) -> None:
+    def __init__(self, source:int, target:int, type:EventType, time:float) -> None:
+        self.source = source
+        self.target = target
         self.type = type
         self.time = time

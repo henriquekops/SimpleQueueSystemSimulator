@@ -17,8 +17,9 @@ class Queue:
         - results(global_time)
     """
 
-    def __init__(self, capacity:int=0, servers:int=0, minArrival:int=0, maxArrival:int=0, minExit:int=0, maxExit:int=0) -> None:
+    def __init__(self, id:int, capacity:int=0, servers:int=0, minArrival:int=0, maxArrival:int=0, minExit:int=0, maxExit:int=0) -> None:
         self.__times = []
+        self.id = id
         self.__capacity = capacity
         self.__servers = servers
         self.minArrival = minArrival
@@ -30,6 +31,7 @@ class Queue:
 
     def __repr__(self):
         return str({
+            "id": self.id,
             "capacity": self.__capacity,
             "servers": self.__servers,
             "minArrival": self.minArrival,
@@ -39,7 +41,10 @@ class Queue:
         })
 
     def is_slot_available(self) -> bool:
-        return self.__position < self.__capacity
+        if self.__capacity > 0:
+            return self.__position < self.__capacity
+        else:
+            return True # infinite queue
 
     def is_server_available(self) -> bool:
         return self.__position <= self.__servers
@@ -57,10 +62,10 @@ class Queue:
         self.__times[self.__position] += time
 
     def results(self, global_time:float) -> str:
-        return {
+        return f"Results for queue {self.id}:\n" + str({
             "capacity": self.__capacity,
             "servers": self.__servers,
             "loss": self.__loss,
             "times": self.__times,
             "percents": [( t / global_time ) for t in self.__times]
-        }
+        })

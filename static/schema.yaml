@@ -1,7 +1,6 @@
 control:
   n: int(min=1, required=True)
   start: num(min=0, required=True)
-  use_loss: bool(required=True)
   inputs: list(int(min=1, required=True))
 
 pseudo_random_generation:

@@ -12,7 +12,7 @@ from src.event import (
 )
 
 # built-in dependencies
-from typing import List
+from random import choices
 
 
 class Simulator:
@@ -30,15 +30,13 @@ class Simulator:
     """
 
     # TODO: read random list for testing
-    # TODO: read yaml and generate network
     
-    def __init__(self, n:int, use_loss:bool, network:Network, producer:Producer):
+    def __init__(self, n:int, network:Network, producer:Producer):
         self.__n = n
         self.__network = network
         self.__global_time = 0
         self.__scheduler = Scheduler()
         self.__producer = producer
-        self.__use_loss = use_loss
         self.__loss = 0
 
     def init(self, start:int):        
@@ -53,58 +51,103 @@ class Simulator:
             elif event.type == EventType.transition:
                 self.__transition(event)
         
-        queue:Queue
-        for queue in self.__queues:
-            print(f'\nSimulation ended for queue {self.__queues.index(queue)}:\n{queue.results(self.__global_time)}\n')
+        queue: Queue
+        for queue in self.__network.queues:
+            print(queue.results(self.__global_time) + "\n")
 
     def __arrive(self, event:Event) -> None:
         self.__compute_time(event)
-        first_queue:Queue = self.__queues[0]  # TODO: How do i know which queue is the first?
-        if first_queue.is_slot_available():
-            first_queue.enter()
-            if first_queue.is_server_available():
-                pass
-                # if #queue does not has next:
-                #     self.__schedule(EventType.departure, first_queue.minExit, first_queue.maxExit)
-                # elif # queue has next:
-                #     self.__schedule(EventType.transition, first_queue.minExit, first_queue.maxExit)
+        queue = self.__network.queue(event.target)
+        if queue.is_slot_available():
+            queue.enter()
+            if queue.is_server_available():
+                targets = self.__network.targets(queue.id) # get all target queues
+                if len(targets.keys()) == 0: # event goes out of network
+                    self.__schedule(
+                        source=event.target,
+                        target=-1, 
+                        event_type=EventType.departure, 
+                        min=queue.minExit, 
+                        max=queue.maxExit
+                    )
+                else: # event passes through weighted bifurcation
+                    queue_id = self.__choose_path(targets)
+                    self.__schedule(
+                        source=event.target,
+                        target=queue_id, 
+                        event_type=EventType.transition, 
+                        min=queue.minExit,
+                        max=queue.maxExit
+                    )
         else:
-            if self.__use_loss:
-                self.__loss += 1
-        self.__schedule(EventType.arrive, first_queue.minArrival, first_queue.maxArrival)
+            self.__loss += 1
+        self.__schedule(
+            source=-1,
+            target=event.target,
+            event_type=EventType.arrive,
+            min=queue.minArrival,
+            max=queue.maxArrival
+        )
 
     def __departure(self, event:Event):
         self.__compute_time(event)
-        last_queue:Queue = self.__queues[-1] # TODO: How do i know which queue is the last?
-        last_queue.exit()
-        if last_queue.was_someone_waiting():
-            self.__schedule(EventType.departure, last_queue.minExit, last_queue.maxExit)
+        queue = self.__network.queue(event.target)
+        queue.exit()
+        if queue.was_someone_waiting():
+            self.__schedule(
+                source=-1,
+                target=event.target,
+                event_type=EventType.departure,
+                min=queue.minExit,
+                max=queue.maxExit
+            )
 
     def __transition(self, event: Event):
         self.__compute_time(event)
-        queue_1:Queue = self.__queues[0] # TODO: how do i know from where events are transitioning
-        queue_2:Queue = self.__queues[1] # TODO: how do i know to where events are transitioning
+        queue_1 = self.__network.queue(event.source)
+        queue_2 = self.__network.queue(event.target)
         queue_1.exit()
         if queue_1.was_someone_waiting():
-            self.__schedule(EventType.transition, queue_1.minExit, queue_1.maxExit)
-            
-        if queue_2.is_slot_available():
+            self.__schedule(
+                source=event.source,
+                target=event.target,
+                event_type=EventType.transition,
+                min=queue_1.minExit,
+                max=queue_1.maxExit
+            )
+        if queue_2.is_slot_available(): # TODO: queue_2 can have other chained queues, how to procceed?
             queue_2.enter()
             if queue_2.is_server_available():
-                self.__schedule(EventType.departure, queue_2.minExit, queue_2.maxExit)
-                
+                self.__schedule( # TODO <<<<<<
+                    EventType.departure,
+                    queue_2.minExit,
+                    queue_2.maxExit
+                )
         else:
-            if self.__use_loss:
-                self.__loss += 1
+            self.__loss += 1
 
-    def __schedule(self, event_type:EventType, min:int, max:int):
+    def __schedule(self, source:int, target:int, event_type:EventType, min:float, max:float):
         r = self.__producer.generate(min, max)
-        self.__scheduler.add(Event(type=event_type, time=(self.__global_time + r)))
+        self.__scheduler.add(
+            Event(
+                source=source,
+                target=target,
+                type=event_type,
+                time=(self.__global_time + r)
+            )
+        )
         self.__n -= 1
 
     def __compute_time(self, event:Event) -> None:
         delta = event.time - self.__global_time
         self.__global_time = event.time
         queue: Queue
-        for queue in self.__queues:
+        for queue in self.__network.queues:
             queue.update_queue_time(delta) 
+
+    def __choose_path(self, targets:dict) -> Queue:
+        return choices(
+            population=list(targets.keys()),
+            weights=list(targets.values()),
+            k=1
+        )[0]

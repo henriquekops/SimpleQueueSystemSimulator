@@ -1,11 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# built-in dependencies
+from typing import List
+
 # project dependencies
 from src.queue import Queue
 
 
 class Network:
+
+    # Example of this network
+    #
+    # {
+    #     1: {
+    #         'object': Queue(),
+    #         'targets': {
+    #             2: 1.0
+    #         }
+    #     },
+    #     2: {
+    #         'object': Queue(),
+    #         'targets': {
+    #             0: 0.5,
+    #             1: 0.5
+    #         }
+    #     }
+    # }
 
     __OBJ = 'object'
     __TGT = 'targets'
@@ -32,7 +53,6 @@ class Network:
         """
         Chain queues with weighted paths 
         """
-        # *TODO: when sum of weights != 1.0, we MAY need to keep track of 'outer' weights (see example below) 
         self.__network[source][self.__TGT][target] = weight
 
     def queue(self, id:int) -> Queue:
@@ -41,12 +61,18 @@ class Network:
         """
         return self.__network[id][self.__OBJ]
 
-    def targets(self, id:int) -> dict():
+    def targets(self, id:int) -> dict:
         """
         Retrieve targets for input id 
         """
-        return self.__network[id][self.__TGT]
+        return self.__network[id][self.__TGT] # TODO: array 
     
+    def queues(self) -> List[Queue]:
+        """
+        Retrieve all queues from network
+        """
+        return [q[self.__OBJ] for q in self.__network.values()]
+
     def __builder(self, yml_data: dict):
         id = 0
         for yml_queue in yml_data['queues']:
@@ -54,6 +80,7 @@ class Network:
             self.add(
                 id=id,
                 queue=Queue(
+                    id=id,
                     capacity=yml_queue.get('capacity'), 
                     servers=yml_queue.get('servers'), 
                     minArrival=yml_queue.get('minArrival'), 
@@ -68,22 +95,8 @@ class Network:
                 target=queue_net['target'],
                 weight=queue_net['weight']
             )
-    
 
-# Example of this network
-
-# {
-#     1: {
-#         'object': Queue(),
-#         'targets': {
-#             2: 1.0
-#         }
-#     },
-#     2: {
-#         'object': Queue(),
-#         'targets': {
-#             0: 0.5,       -> '0' means 'out' (*TODO: generate this value whenever sum of targets != 1.0)
-#             1: 0.5
-#         }
-#     }
-# }
+        for queue in self.__network.values():
+            s = sum(queue[self.__TGT].values())
+            if s < 1.0:
+                queue[self.__TGT][0] = 1 - s
