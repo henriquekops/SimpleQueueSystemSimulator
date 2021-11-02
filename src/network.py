@@ -41,10 +41,18 @@ class Network:
         """
         return self.__network[id][self.__TGT]
     
+    def __chack_param(self, dict_yml: dict):
+        if 'minArrival' not in dict_yml.keys():
+            dict_yml['minArrival'] = 0
+            
+        if 'maxArrival' not in dict_yml.keys():
+            dict_yml['maxArrival'] = 0
+    
     def __builder(self, yml_data):
         
         for queue in yml_data['queues']:
-            print(queue)
+            
+            self.__chack_param(dict_yml=queue)
             queue_aux = Queue(capacity=queue['capacity'], 
                               servers=queue['servers'], 
                               minArrival=queue['minArrival'], 
