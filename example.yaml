@@ -16,6 +16,8 @@ queues:
 
   - servers: 2
     capacity: 5
+    minArrival: 3
+    maxArrival: 3
     minExit: 5
     maxExit: 5
   

@@ -2,15 +2,17 @@
 # -*- coding: utf-8 -*-
 
 # project dependencies
-from queue import Queue
+from src.queue import Queue
+from src.utils.config import YamlParser
 
 class Network:
 
     __OBJ = 'object'
     __TGT = 'targets'
 
-    def __init__(self) -> None:
+    def __init__(self, yml_data: YamlParser) -> None:
         self.__network = dict()
+        self.__builder(yml_data)
 
     def add(self, id:int, queue:Queue) -> None:
         """
@@ -38,6 +40,27 @@ class Network:
         Retrieve targets for input id 
         """
         return self.__network[id][self.__TGT]
+    
+    def __builder(self, yml_data):
+        
+        for queue in yml_data['queues']:
+            print(queue)
+            queue_aux = Queue(capacity=queue['capacity'], 
+                              servers=queue['servers'], 
+                              minArrival=queue['minArrival'], 
+                              maxArrival=queue['maxArrival'], 
+                              minExit=queue['minExit'], 
+                              maxExit=queue['maxExit'])
+            
+            id = yml_data['queues'].index(queue) + 1
+            self.add(id=id, queue=queue)
+            
+        for queue_net in yml_data['network']:
+            self.chain(source=queue_net['source'], target=queue_net['target'], weight=queue_net['weight'])
+    
+    def show(self):
+        for k, v in self.__network.items():
+            print(f"{k} : {v} \n")
     
 
 # Example of this network

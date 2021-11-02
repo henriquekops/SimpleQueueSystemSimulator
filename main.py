@@ -3,11 +3,13 @@
 import tkinter as tk
 import json
 
+from src.utils.config import YamlParser
 from configparser import ConfigParser
 from sys import argv
 from art import tprint
 from src.simulator import Simulator
-from src import (
+from src.network import Network
+from src.ui import (
     display
 )
 
@@ -36,31 +38,44 @@ TODO:
 """
 
 if __name__ == '__main__':
+
+    p = YamlParser()
+    p.validate('example.yaml')
+    yml_data = p.read('example.yaml')
     
-    conf = ConfigParser()
-    conf.read('setup.cfg')
-
-    tprint("Queue simulator", font="cybermedium")
+    for k, v in yml_data.items():
+        print(f"{k} : {v} \n")
     
-    args = argv
-
-    try:
-        if args[1] == 'teacher':
-            root = tk.Tk()
-            d = display.Display(master=root)
-            d.mainloop()
-    except:
-        pass
-
-    Simulator(
-            n=int(conf.get('Queue','n')), 
-            use_loss=bool(conf.get('Queue','use_loss'))
-        ).init(
-            start=int(conf.get('Queue','start')),
-            capacities=[int(x) for x in json.loads(conf.get('Queue','capacities'))],
-            servers=[int(x) for x in json.loads(conf.get('Queue','servers'))],
-            minArrivals=[int(x) for x in json.loads(conf.get('Queue','minArrivals'))],
-            maxArrivals=[int(x) for x in json.loads(conf.get('Queue','maxArrivals'))],
-            minExits=[int(x) for x in json.loads(conf.get('Queue','minExits'))],
-            maxExits=[int(x) for x in json.loads(conf.get('Queue','maxExits'))]
-        )
+    net = Network(yml_data=yml_data)
+    net.show()
+    
+    
+        
+#    conf = ConfigParser()
+#    conf.read('setup.cfg')
+#
+#    tprint("Queue simulator", font="cybermedium")
+#    
+#    args = argv
+#
+#
+#    try:
+#        if args[1] == 'teacher':
+#            root = tk.Tk()
+#            d = display.Display(master=root)
+#            d.mainloop()
+#    except:
+#       pass
+#
+#    Simulator(
+#            n=int(conf.get('Queue','n')), 
+#            use_loss=bool(conf.get('Queue','use_loss'))
+#        ).init(
+#            start=int(conf.get('Queue','start')),
+#            capacities=[int(x) for x in json.loads(conf.get('Queue','capacities'))],
+#            servers=[int(x) for x in json.loads(conf.get('Queue','servers'))],
+#            minArrivals=[int(x) for x in json.loads(conf.get('Queue','minArrivals'))],
+#            maxArrivals=[int(x) for x in json.loads(conf.get('Queue','maxArrivals'))],
+#            minExits=[int(x) for x in json.loads(conf.get('Queue','minExits'))],
+#            maxExits=[int(x) for x in json.loads(conf.get('Queue','maxExits'))]
+#        )
