@@ -6,6 +6,12 @@ control:
     - 1
     - 2
 
+pseudo_random_generation:
+  x: 1
+  a: 2
+  c: 3
+  m: 4
+
 queues:
   - servers: 1
     capacity: 5
