@@ -65,7 +65,7 @@ class Simulator:
                 if len(targets.keys()) == 0: # event goes out of network
                     self.__schedule(
                         source=event.target,
-                        target=-1, 
+                        target=0, 
                         event_type=EventType.departure, 
                         min=queue.minExit, 
                         max=queue.maxExit
@@ -91,7 +91,7 @@ class Simulator:
 
     def __departure(self, event:Event):
         self.__compute_time(event)
-        queue = self.__network.queue(event.target)
+        queue = self.__network.queue(event.source)
         queue.exit()
         if queue.was_someone_waiting():
             self.__schedule(
