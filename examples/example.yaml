@@ -1,6 +1,5 @@
 control:
   start: 2
-  loss: true
   n: 100
   inputs:
     - 1
