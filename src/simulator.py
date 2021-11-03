@@ -39,8 +39,10 @@ class Simulator:
         self.__producer = producer
         self.__loss = 0
 
-    def init(self, start:int):        
-        self.__scheduler.add(Event(type=EventType.arrive, time=(start)))
+    def init(self, start:int):
+
+        # TODO: Start all inputs from yaml
+        # self.__scheduler.add(Event(type=EventType.arrive, time=(start)))
         
         while(self.__n > 0):
             event:Event = self.__scheduler.next()[1]
@@ -72,6 +74,7 @@ class Simulator:
                     )
                 else: # event passes through weighted bifurcation
                     queue_id = self.__choose_path(targets)
+                    # TODO: validate if choses to go out of network {key = 0} 
                     self.__schedule(
                         source=event.target,
                         target=queue_id, 
@@ -118,11 +121,12 @@ class Simulator:
         if queue_2.is_slot_available(): # TODO: queue_2 can have other chained queues, how to procceed?
             queue_2.enter()
             if queue_2.is_server_available():
-                self.__schedule( # TODO <<<<<<
-                    EventType.departure,
-                    queue_2.minExit,
-                    queue_2.maxExit
-                )
+                pass
+                # self.__schedule(
+                #     EventType.departure,
+                #     queue_2.minExit,
+                #     queue_2.maxExit
+                # )
         else:
             self.__loss += 1
 
@@ -145,7 +149,8 @@ class Simulator:
         for queue in self.__network.queues:
             queue.update_queue_time(delta) 
 
-    def __choose_path(self, targets:dict) -> Queue:
+    def __choose_path(self, targets:dict) -> Queue: # TODO: Consume random number
+        # self.__n -= 1
         return choices(
             population=list(targets.keys()),
             weights=list(targets.values()),

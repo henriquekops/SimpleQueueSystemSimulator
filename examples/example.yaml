@@ -1,9 +1,11 @@
 control:
-  start: 2
   n: 100
   inputs:
-    - 1
-    - 2
+    - queue: 1
+      start: 2
+    - queue: 2
+      start: 3
+
 
 pseudo_random_generation:
   x: 1

@@ -24,6 +24,7 @@ class Producer:
             - m: max random value in sequence
         """
         
+        # TODO: Set default values
         self.__x:float = yml_data.get('x')
         self.__a:float = yml_data.get('a')
         self.__c:float = yml_data.get('c')

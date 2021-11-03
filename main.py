@@ -51,7 +51,7 @@ if __name__ == '__main__':
         producer = Producer(yml_data=yml_data.get('pseudo_random_generation'))
         network = Network(yml_data=yml_data.get('network'))
 
-        # TODO: what about 'inputs' field?
+        # TODO: pass 'inputs' to simulator
         yml_control = yml_data.get('control')
         simulator = Simulator(yml_control.get('n'), network, producer)
         simulator.start(yml_control.get('start'))

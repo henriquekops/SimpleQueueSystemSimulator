@@ -1,29 +1,32 @@
 control:
   n: int(min=1, required=True)
-  start: num(min=0, required=True)
-  inputs: list(int(min=1, required=True))
+  inputs: list(include('c_inputs'))
 
 pseudo_random_generation:
-  x: num(min=0, required=True)
-  a: num(min=0, required=True)
-  c: num(min=0, required=True)
-  m: num(min=0, required=True)
+  x: num(min=0, required=False)
+  a: num(min=0, required=False)
+  c: num(min=0, required=False)
+  m: num(min=0, required=False)
 
 queues:
-  list(include('queue'), min=1)
+  list(include('q_queue'), min=1)
 
 network:
   list(include('n_queue'), min=0)
 ---
-queue:
-  servers: num(min=0, required=True)
-  capacity: num(min=0, required=False)
+q_queue:
+  servers: int(min=0, required=True)
+  capacity: int(min=0, required=False)
   minArrival: num(min=0, required=False)
   maxArrival: num(min=0, required=False)
   minExit: num(min=0, required=True)
   maxExit: num(min=0, required=True)
 
 n_queue:
-  source: int(min=1)
-  target: int(min=1)
-  weight: num(min=0.1, max=1)
+  source: int(min=1, required=True)
+  target: int(min=1, required=True)
+  weight: num(min=0.1, max=1, required=True)
+
+c_inputs:
+  queue: int(min=1, required=True)
+  start: num(min=0, required=True)
