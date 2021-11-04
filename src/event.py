@@ -32,3 +32,6 @@ class Event:
         self.target = target
         self.type = type
         self.time = time
+
+    def __repr__(self) -> str:
+        return f"source={self.source} target={self.target} type={self.type} time={self.time}"

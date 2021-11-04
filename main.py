@@ -54,7 +54,6 @@ if __name__ == '__main__':
         # TODO: pass 'inputs' to simulator
         yml_control = yml_data.get('control')
         simulator = Simulator(yml_control.get('n'), network, producer)
-        print(yml_control.get('start'))
         simulator.init(yml_control.get('inputs'))
     
     else:

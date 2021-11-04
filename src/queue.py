@@ -18,9 +18,9 @@ class Queue:
     """
 
     def __init__(self, id:int, capacity:int=0, servers:int=0, minArrival:int=0, maxArrival:int=0, minExit:int=0, maxExit:int=0) -> None:
-        self.__times = []
+        self.__times = [0.0]
         self.id = id
-        self.__capacity = capacity
+        self.__capacity = capacity if capacity else 0
         self.__servers = servers
         self.minArrival = minArrival
         self.maxArrival = maxArrival
@@ -59,13 +59,9 @@ class Queue:
         self.__position -= 1
 
     def update_queue_time(self, time:float) -> None:
-        if self.__position < 1:
-            self.__times = [0.0]
-
-        elif len(self.__times) < self.__position+1:
-            for i in range(self.__position+1):
-                self.__times.append(0)
-
+        if len(self.__times) < self.__position+1:
+            self.__times.append(0.0)
+            
         self.__times[self.__position] += time
 
     def results(self, global_time:float) -> str:

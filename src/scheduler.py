@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from typing import Tuple
 from heapq import (
     heappop,
     heappush
@@ -20,7 +21,7 @@ class Scheduler:
     def __init__(self) -> None:
         self.__heap = []
 
-    def add(self, element: Event):
+    def add(self, element: Event) -> None:
         """
         - Insert element at heap
         - Params:
@@ -28,9 +29,9 @@ class Scheduler:
         - Returns:
             - None
         """
-        heappush(self.__heap, (element.time, element)) # TODO esta dando problema em comparacao de objetos
+        heappush(self.__heap, (element.time, element))
 
-    def next(self):
+    def next(self) -> Tuple[float, Event]:
         """
         - Give next client at min heap
         - Params:
@@ -38,4 +39,6 @@ class Scheduler:
         - Returns:
             - None
         """
-        return heappop(self.__heap)
+        e =  heappop(self.__heap)
+        print(e)
+        return e
