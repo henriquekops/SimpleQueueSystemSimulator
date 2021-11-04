@@ -6,7 +6,6 @@ control:
     - queue: 2
       start: 3
 
-
 pseudo_random_generation:
   x: 1
   a: 2

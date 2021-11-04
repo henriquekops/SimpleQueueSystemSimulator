@@ -65,7 +65,7 @@ class Network:
         """
         Retrieve targets for input id 
         """
-        return self.__network[id][self.__TGT] # TODO: array 
+        return self.__network[id][self.__TGT] #
     
     def queues(self) -> List[Queue]:
         """

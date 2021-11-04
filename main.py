@@ -31,11 +31,11 @@ if __name__ == '__main__':
     
     tprint("Queue simulator", font="cybermedium")
 
-    if len(argv) != 2:
-        print(HELP)
-        exit(0)
+    #if len(argv) != 2:
+    #    print(HELP)
+    #    exit(0)
 
-    yml = argv[1]
+    yml = 'examples/example.yaml'#argv[1]
 
     if not exists(yml):
         print(f"File '{yml}' not found!")
@@ -49,12 +49,13 @@ if __name__ == '__main__':
         yml_data = parser.read(yml)
 
         producer = Producer(yml_data=yml_data.get('pseudo_random_generation'))
-        network = Network(yml_data=yml_data.get('network'))
+        network = Network(yml_data=yml_data)
 
         # TODO: pass 'inputs' to simulator
         yml_control = yml_data.get('control')
         simulator = Simulator(yml_control.get('n'), network, producer)
-        simulator.start(yml_control.get('start'))
+        print(yml_control.get('start'))
+        simulator.init(yml_control.get('inputs'))
     
     else:
         print(err)

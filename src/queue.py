@@ -59,6 +59,13 @@ class Queue:
         self.__position -= 1
 
     def update_queue_time(self, time:float) -> None:
+        if self.__position < 1:
+            self.__times = [0.0]
+
+        elif len(self.__times) < self.__position+1:
+            for i in range(self.__position+1):
+                self.__times.append(0)
+
         self.__times[self.__position] += time
 
     def results(self, global_time:float) -> str:

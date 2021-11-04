@@ -39,10 +39,14 @@ class Simulator:
         self.__producer = producer
         self.__loss = 0
 
-    def init(self, start:int):
+    def init(self, inputs):
 
         # TODO: Start all inputs from yaml
-        # self.__scheduler.add(Event(type=EventType.arrive, time=(start)))
+        # init have to revieve control.inputs.
+        # start -> time and queue -> target
+        for input in inputs:
+            event = Event(source=0, target=input.get('queue'), type=EventType.arrive, time=input.get('start'))
+            self.__scheduler.add(event)
         
         while(self.__n > 0):
             event:Event = self.__scheduler.next()[1]
@@ -54,7 +58,7 @@ class Simulator:
                 self.__transition(event)
         
         queue: Queue
-        for queue in self.__network.queues:
+        for queue in self.__network.queues():
             print(queue.results(self.__global_time) + "\n")
 
     def __arrive(self, event:Event) -> None:
@@ -64,7 +68,7 @@ class Simulator:
             queue.enter()
             if queue.is_server_available():
                 targets = self.__network.targets(queue.id) # get all target queues
-                if len(targets.keys()) == 0: # event goes out of network
+                if targets.keys() == [0]: # event goes out of network
                     self.__schedule(
                         source=event.target,
                         target=0, 
@@ -74,7 +78,6 @@ class Simulator:
                     )
                 else: # event passes through weighted bifurcation
                     queue_id = self.__choose_path(targets)
-                    # TODO: validate if choses to go out of network {key = 0} 
                     self.__schedule(
                         source=event.target,
                         target=queue_id, 
@@ -118,15 +121,27 @@ class Simulator:
                 min=queue_1.minExit,
                 max=queue_1.maxExit
             )
-        if queue_2.is_slot_available(): # TODO: queue_2 can have other chained queues, how to procceed?
+        if queue_2.is_slot_available(): # TODO: revisar este fluxo. Para ver se realemnte esta funcionando em todos os cenarios
             queue_2.enter()
             if queue_2.is_server_available():
-                pass
-                # self.__schedule(
-                #     EventType.departure,
-                #     queue_2.minExit,
-                #     queue_2.maxExit
-                # )
+                targets = self.__network.targets(queue_2.id)  # get all target queues
+                if targets.keys() == [0]:  # event goes out of network
+                    self.__schedule(
+                        source=event.target,
+                        target=0,
+                        event_type=EventType.departure,
+                        min=queue_2.minExit,
+                        max=queue_2.maxExit
+                    )
+                else:  # event passes through weighted bifurcation
+                    queue_id = self.__choose_path(targets)
+                    self.__schedule(
+                        source=event.target,
+                        target=queue_id,
+                        event_type=EventType.transition,
+                        min=queue_2.minExit,
+                        max=queue_2.maxExit
+                    )
         else:
             self.__loss += 1
 
@@ -146,7 +161,7 @@ class Simulator:
         delta = event.time - self.__global_time
         self.__global_time = event.time
         queue: Queue
-        for queue in self.__network.queues:
+        for queue in self.__network.queues():
             queue.update_queue_time(delta) 
 
     def __choose_path(self, targets:dict) -> Queue: # TODO: Consume random number

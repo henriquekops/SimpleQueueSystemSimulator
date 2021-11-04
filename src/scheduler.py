@@ -28,7 +28,7 @@ class Scheduler:
         - Returns:
             - None
         """
-        heappush(self.__heap, (element.time,element))
+        heappush(self.__heap, (element.time, element)) # TODO esta dando problema em comparacao de objetos
 
     def next(self):
         """

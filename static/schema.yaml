@@ -1,7 +1,7 @@
 control:
   n: int(min=1, required=True)
   inputs: list(include('c_inputs'))
-
+start: num(min=1, required=False)
 pseudo_random_generation:
   x: num(min=0, required=False)
   a: num(min=0, required=False)
