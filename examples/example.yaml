@@ -1,8 +1,8 @@
 control:
-  n: 100
+  n: 100000
   inputs:
     - queue: 1
-      start: 2.0
+      start: 1.0
 
 pseudo_random_generation:
   x: 3
@@ -11,21 +11,21 @@ pseudo_random_generation:
   m: 2147483643
 
 queues:
-  - servers: 2
-    capacity: 3
-    minArrival: 1.0
-    maxArrival: 3.0
-    minExit: 2.0
-    maxExit: 5.0
-
   - servers: 1
-    capacity: 3
-    minExit: 3.0
-    maxExit: 6.0
-  
-  - servers: 3
+    minArrival: 1.0
+    maxArrival: 4.0
     minExit: 1.0
-    maxExit: 4.0
+    maxExit: 1.5
+
+  - servers: 3
+    capacity: 5
+    minExit: 5.0
+    maxExit: 10.0
+  
+  - servers: 2
+    capacity: 8
+    minExit: 10.0
+    maxExit: 20.0
 
 network:
   - source: 1
@@ -36,7 +36,10 @@ network:
     weight: 0.2
   - source: 2
     target: 1
-    weight: 0.5
+    weight: 0.3
   - source: 2
     target: 3
     weight: 0.5
+  - source: 3
+    target: 2
+    weight: 0.7

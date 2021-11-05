@@ -72,7 +72,7 @@ class Simulator:
                 queue_id = self.__choose_path(targets)
                 if queue_id == 0:
                     self.__schedule(
-                        source=event.source,
+                        source=event.target,
                         target=0,
                         event_type=EventType.departure,
                         min=queue.minExit,
@@ -138,7 +138,7 @@ class Simulator:
                 )
             else:
                 self.__schedule(
-                    source=event.target,
+                    source=event.source,
                     target=queue_id,
                     event_type=EventType.transition,
                     min=queue_2.minExit,
