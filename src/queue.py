@@ -18,12 +18,17 @@ class Queue:
     """
 
     def __init__(self, id:int, capacity:int=0, servers:int=0, minArrival:int=0, maxArrival:int=0, minExit:int=0, maxExit:int=0) -> None:
-        self.__times = [0.0]
-        self.id = id
         self.__capacity = capacity if capacity else 0
+        self.minArrival = minArrival if minArrival else 0.0
+        self.maxArrival = maxArrival if maxArrival else 0.0
+        
+        if self.__capacity > 0:
+            self.__times = [0.0] * self.__capacity
+        else:
+            self.__times = [0.0]
+        
+        self.id = id
         self.__servers = servers
-        self.minArrival = minArrival
-        self.maxArrival = maxArrival
         self.minExit = minExit
         self.maxExit = maxExit
         self.__loss = 0
@@ -42,7 +47,7 @@ class Queue:
 
     def is_slot_available(self) -> bool:
         if self.__capacity > 0:
-            return self.__position < self.__capacity
+            return self.__position < self.__capacity-1
         else:
             return True # infinite queue
 
@@ -59,8 +64,9 @@ class Queue:
         self.__position -= 1
 
     def update_queue_time(self, time:float) -> None:
-        if len(self.__times) < self.__position+1:
-            self.__times.append(0.0)
+        if self.__capacity == 0:
+            if len(self.__times) < self.__position+1:
+                self.__times.append(0.0)
             
         self.__times[self.__position] += time
 

@@ -40,11 +40,13 @@ class Simulator:
         self.__loss = 0
 
     def init(self, inputs):
-        print(self.__network)
         for input in inputs:
-            queue = input.get('queue')
-            start = float(input.get('start'))
-            event = Event(source=0, target=queue, type=EventType.arrive, time=start)
+            event = Event(
+                source=0,
+                target=input.get('queue'),
+                type=EventType.arrive,
+                time=float(input.get('start'))
+            )
             self.__scheduler.add(event)
         
         while(self.__n > 0):
@@ -61,39 +63,29 @@ class Simulator:
             print(queue.results(self.__global_time) + "\n")
 
     def __arrive(self, event:Event) -> None:
-        print("arrive")
         self.__compute_time(event)
         queue = self.__network.queue(event.target)
         if queue.is_slot_available():
             queue.enter()
             if queue.is_server_available():
-                targets = self.__network.targets(queue.id) # get all target queues
-                if targets.keys() == [0]: # event goes out of network
+                targets = self.__network.targets(queue.id)
+                queue_id = self.__choose_path(targets)
+                if queue_id == 0:
                     self.__schedule(
-                        source=event.target,
-                        target=0, 
-                        event_type=EventType.departure, 
-                        min=queue.minExit, 
+                        source=event.source,
+                        target=0,
+                        event_type=EventType.departure,
+                        min=queue.minExit,
                         max=queue.maxExit
                     )
-                else: # event passes through weighted bifurcation
-                    queue_id = self.__choose_path(targets)
-                    if queue_id == 0:
-                        self.__schedule(
-                            source=event.source,
-                            target=0,
-                            event_type=EventType.departure,
-                            min=queue.minExit,
-                            max=queue.maxExit
-                        )
-                    else:
-                        self.__schedule(
-                            source=event.target,
-                            target=queue_id,
-                            event_type=EventType.transition,
-                            min=queue.minExit,
-                            max=queue.maxExit
-                        )
+                else:
+                    self.__schedule(
+                        source=event.target,
+                        target=queue_id,
+                        event_type=EventType.transition,
+                        min=queue.minExit,
+                        max=queue.maxExit
+                    )
         else:
             self.__loss += 1
         self.__schedule(
@@ -105,28 +97,38 @@ class Simulator:
         )
 
     def __departure(self, event:Event):
-        print("departure")
         self.__compute_time(event)
         queue = self.__network.queue(event.source)
         queue.exit()
         if queue.was_someone_waiting():
-            self.__schedule(
-                source=event.source,
-                target=0,
-                event_type=EventType.departure,
-                min=queue.minExit,
-                max=queue.maxExit
-            )
+            targets = self.__network.targets(queue.id)
+            queue_id = self.__choose_path(targets)
+            if queue_id == 0:
+                self.__schedule(
+                    source=event.source,
+                    target=0,
+                    event_type=EventType.departure,
+                    min=queue.minExit,
+                    max=queue.maxExit
+                )
+            else:
+                self.__schedule(
+                    source=event.source,
+                    target=queue_id,
+                    event_type=EventType.transition,
+                    min=queue.minExit,
+                    max=queue.maxExit
+                )
 
     def __transition(self, event: Event):
-        print("transition")
         self.__compute_time(event)
         queue_1 = self.__network.queue(event.source)
         queue_2 = self.__network.queue(event.target)
         queue_1.exit()
         if queue_1.was_someone_waiting():
-            targets = self.__network.targets(queue_2.id)  # get all target queues
-            if targets.keys() == [0]:  # event goes out of network
+            targets = self.__network.targets(queue_1.id) 
+            queue_id = self.__choose_path(targets)
+            if queue_id == 0:
                 self.__schedule(
                     source=event.source,
                     target=0,
@@ -134,11 +136,22 @@ class Simulator:
                     min=queue_1.minExit,
                     max=queue_1.maxExit
                 )
-            else:  # event passes through weighted bifurcation
+            else:
+                self.__schedule(
+                    source=event.target,
+                    target=queue_id,
+                    event_type=EventType.transition,
+                    min=queue_2.minExit,
+                    max=queue_2.maxExit
+                )
+        if queue_2.is_slot_available():
+            queue_2.enter()
+            if queue_2.is_server_available():
+                targets = self.__network.targets(queue_2.id)
                 queue_id = self.__choose_path(targets)
                 if queue_id == 0:
                     self.__schedule(
-                        source=event.source,
+                        source=event.target,
                         target=0,
                         event_type=EventType.departure,
                         min=queue_1.minExit,
@@ -152,36 +165,6 @@ class Simulator:
                         min=queue_2.minExit,
                         max=queue_2.maxExit
                     )
-        if queue_2.is_slot_available(): # TODO: revisar este fluxo. Para ver se realemnte esta funcionando em todos os cenarios
-            queue_2.enter()
-            if queue_2.is_server_available():
-                targets = self.__network.targets(queue_2.id)  # get all target queues
-                if targets.keys() == [0]:  # event goes out of network
-                    self.__schedule(
-                        source=event.target,
-                        target=0,
-                        event_type=EventType.departure,
-                        min=queue_2.minExit,
-                        max=queue_2.maxExit
-                    )
-                else:  # event passes through weighted bifurcation
-                    queue_id = self.__choose_path(targets)
-                    if queue_id == 0:
-                        self.__schedule(
-                            source=event.source,
-                            target=0,
-                            event_type=EventType.departure,
-                            min=queue_1.minExit,
-                            max=queue_1.maxExit
-                        )
-                    else:
-                        self.__schedule(
-                            source=event.target,
-                            target=queue_id,
-                            event_type=EventType.transition,
-                            min=queue_2.minExit,
-                            max=queue_2.maxExit
-                        )
         else:
             self.__loss += 1
 

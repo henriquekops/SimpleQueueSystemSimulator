@@ -39,6 +39,4 @@ class Scheduler:
         - Returns:
             - None
         """
-        e =  heappop(self.__heap)
-        print(e)
-        return e
+        return  heappop(self.__heap)
