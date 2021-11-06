@@ -7,6 +7,7 @@ from sys import (
     exit
 )
 from os.path import exists
+from os import system
 
 # project dependencies
 from src.utils.config import YamlParser
@@ -18,12 +19,10 @@ from src.producer import Producer
 from art import tprint
 
 
-HELP =  """ Run:\n\tpython3 main.py <your-setup>.yaml\nGenerate:\n\t<TBD>"""
-
+HELP =  """Run:\n\tpython3 main.py <your-setup>.yaml\nExample:\n\tpython3 main.py example"""
 
 """
-TODO: 
-    - Ler arquivo de entrada (cuidar criação do Producer() na classe Simulator())
+TODO:
     - Permitir a leitura de uma sequência de 'aleatórios' previamente calculados
 """
 
@@ -31,11 +30,17 @@ if __name__ == '__main__':
     
     tprint("Queue simulator", font="cybermedium")
 
-    #if len(argv) != 2:
-    #    print(HELP)
-    #    exit(0)
+    if len(argv) != 2:
+       print(HELP)
+       exit(0)
 
-    yml = 'examples/example.yaml'#argv[1]
+    cmd = argv[1]
+
+    if cmd == "example":
+        system("cat examples/example.yaml")
+        exit(0)
+
+    yml = cmd
 
     if not exists(yml):
         print(f"File '{yml}' not found!")
@@ -51,7 +56,6 @@ if __name__ == '__main__':
         producer = Producer(yml_data=yml_data.get('pseudo_random_generation'))
         network = Network(yml_data=yml_data)
 
-        # TODO: pass 'inputs' to simulator
         yml_control = yml_data.get('control')
         simulator = Simulator(yml_control.get('n'), network, producer)
         simulator.init(yml_control.get('inputs'))

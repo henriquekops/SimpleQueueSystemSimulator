@@ -59,7 +59,7 @@ class Simulator:
         
         queue: Queue
         for queue in self.__network.queues():
-            print(queue.results(self.__global_time) + "\n")
+            queue.results(self.__global_time)
 
     def __arrive(self, event:Event) -> None:
         self.__compute_time(event)

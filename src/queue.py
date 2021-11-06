@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# external dependencies
+from tabulate import tabulate
 
 class Queue:
 
@@ -70,11 +72,15 @@ class Queue:
             
         self.__times[self.__position] += time
 
-    def results(self, global_time:float) -> str:
-        return f"Results for queue {self.id}:\n" + str({
-            "capacity": self.__capacity,
-            "servers": self.__servers,
-            "loss": self.loss,
-            "times": self.__times,
-            "percents": [( t / global_time ) for t in self.__times]
-        })
+    def results(self, global_time:float) -> None:
+        print(f"Results for queue {self.id}")
+        print(tabulate([
+            ["capacity", self.__capacity],
+            ["servers", self.__servers],
+            ["loss", self.loss]
+        ]))
+        print(tabulate({
+            "times": ["{:.4f}".format(t) for t in self.__times],
+            "percents": ["{:.2f}%".format((t/global_time)*100) for t in self.__times]
+        }, headers="keys", showindex="always", tablefmt="pretty"))
+        print("\n\n")
