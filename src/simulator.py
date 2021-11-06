@@ -37,7 +37,6 @@ class Simulator:
         self.__global_time = 0
         self.__scheduler = Scheduler()
         self.__producer = producer
-        self.__loss = 0
 
     def init(self, inputs):
         for input in inputs:
@@ -87,7 +86,7 @@ class Simulator:
                         max=queue.maxExit
                     )
         else:
-            self.__loss += 1
+            queue.loss += 1
         self.__schedule(
             source=0,
             target=event.target,
@@ -141,8 +140,8 @@ class Simulator:
                     source=event.source,
                     target=queue_id,
                     event_type=EventType.transition,
-                    min=queue_2.minExit,
-                    max=queue_2.maxExit
+                    min=queue_1.minExit,
+                    max=queue_1.maxExit
                 )
         if queue_2.is_slot_available():
             queue_2.enter()
@@ -154,8 +153,8 @@ class Simulator:
                         source=event.target,
                         target=0,
                         event_type=EventType.departure,
-                        min=queue_1.minExit,
-                        max=queue_1.maxExit
+                        min=queue_2.minExit,
+                        max=queue_2.maxExit
                     )
                 else:
                     self.__schedule(
@@ -166,7 +165,7 @@ class Simulator:
                         max=queue_2.maxExit
                     )
         else:
-            self.__loss += 1
+            queue_2.loss += 1
 
     def __schedule(self, source:int, target:int, event_type:EventType, min:float, max:float):
         r = self.__producer.generate(min, max)

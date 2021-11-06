@@ -31,7 +31,7 @@ class Queue:
         self.__servers = servers
         self.minExit = minExit
         self.maxExit = maxExit
-        self.__loss = 0
+        self.loss = 0
         self.__position = 0
 
     def __repr__(self):
@@ -74,7 +74,7 @@ class Queue:
         return f"Results for queue {self.id}:\n" + str({
             "capacity": self.__capacity,
             "servers": self.__servers,
-            "loss": self.__loss,
+            "loss": self.loss,
             "times": self.__times,
             "percents": [( t / global_time ) for t in self.__times]
         })
