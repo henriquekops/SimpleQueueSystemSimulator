@@ -60,6 +60,8 @@ class Simulator:
         queue: Queue
         for queue in self.__network.queues():
             queue.results(self.__global_time)
+        
+        print("Global time: {:.2f}s".format(self.__global_time))
 
     def __arrive(self, event:Event) -> None:
         self.__compute_time(event)
@@ -186,8 +188,8 @@ class Simulator:
         for queue in self.__network.queues():
             queue.update_queue_time(delta) 
 
-    def __choose_path(self, targets:dict) -> Queue: # TODO: Consume random number
-        # self.__n -= 1
+    def __choose_path(self, targets:dict) -> Queue:
+        self.__n -= 1
         return choices(
             population=list(targets.keys()),
             weights=list(targets.values()),
