@@ -28,8 +28,6 @@ class Simulator:
         - __schedule(type, min, max)
         - __compute_time(event)
     """
-
-    # TODO: read random list for testing
     
     def __init__(self, n:int, network:Network, producer:Producer):
         self.__n = n
